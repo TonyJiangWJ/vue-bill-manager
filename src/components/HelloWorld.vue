@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <img src="@/assets/logo.png">
     <h1>{{ msg }}</h1>
     <h2>Essential Links</h2>
     <ul>
@@ -84,8 +85,12 @@
 </template>
 
 <script>
+import TopBar from './TopBar'
 export default {
   name: 'HelloWorld',
+  components: {
+    TopBar
+  },
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'

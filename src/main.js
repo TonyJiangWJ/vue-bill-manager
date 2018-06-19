@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import './assets/css/layui.css'
 
+import './assets/css/layui.css'
+import './assets/css/global.css'
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

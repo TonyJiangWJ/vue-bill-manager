@@ -1,13 +1,19 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+  <div>
+    <top-bar></top-bar>
+    <div id="app">
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script>
+import TopBar from './components/TopBar'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    TopBar
+  }
 }
 </script>
 
