@@ -1,6 +1,11 @@
 # vue-bill-manager
 
-> 基于vue的账单管理页面系统
+>## 基于vue开发的工具页面，包含以下功能
+- 实用小工具 基础加密等
+- 个人账单管理（开发中）
+
+ >## live demo
+ - http://112.74.175.214/b/index.html#/tools/
 
 ## Build Setup
 
