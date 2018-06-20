@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="t2-table">
     <table class="t-table">
         <thead>
         <tr>
@@ -101,3 +101,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.t2-table {
+  padding: 20px;
+}
+</style>

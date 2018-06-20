@@ -2,15 +2,14 @@
   <div>
     <div class="layui-main center">
       <span class="lay-span">
-        <a href="javascript:void(0);" @click="jumpList">测试列表</a><span>|</span>
-        <router-link to="/tools/t2test">T2测试接口</router-link><span>|</span>
-        <a href="javascript:void(0);">通用工具</a><span>|</span>
-        <a href="javascript:void(0);">JSON格式化工具</a><span>|</span>
-        <a href="javascript:void(0);">iBatis/MyBatis日志转换</a><span>|</span>
-        <a href="javascript:void(0);">基础加密通信</a>
+        <router-link to="/tools/">通用工具</router-link><span>|</span>
+        <router-link to="/tools/jsonFormat">JSON格式化工具</router-link><span>|</span>
+        <router-link to="/tools/sqlLogFormat">iBatis/MyBatis日志转换</router-link><span>|</span>
+        <router-link to="/tools/encryption">基础加密通信</router-link><span>|</span>
+        <router-link to="/tools/t2test">T2测试接口</router-link>
       </span>
     </div>
-    <div>
+    <div class="tool-container">
       <router-view></router-view>
     </div>
   </div>
@@ -46,5 +45,9 @@ export default {
 
   .lay-span a {
     color: #999;
+  }
+
+  .tool-container {
+    padding: 20px 10px;
   }
 </style>

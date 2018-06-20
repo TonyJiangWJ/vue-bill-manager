@@ -1,9 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import TestList from '@/components/TestList'
 import Tools from '@/components/Tools'
 import T2Test from '@/components/tools/T2Test'
+import CommonTools from '@/components/tools/CommonTools'
+import JsonFormat from '@/components/tools/JsonFormat'
+import SqlLogFormat from '@/components/tools/SqlLogFormat'
+import Encryption from '@/components/tools/Encryption'
 
 Vue.use(Router)
 
@@ -15,18 +18,27 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/testList',
-      name: 'TestList',
-      component: TestList
-    },
-    {
       path: '/tools',
-      name: 'Tools',
       component: Tools,
       children: [{
-        path: '/tools/testList',
-        name: 'testList',
-        component: TestList
+        path: '',
+        name: 'CommonTools',
+        component: CommonTools
+      },
+      {
+        path: '/tools/jsonFormat',
+        name: 'JsonFormat',
+        component: JsonFormat
+      },
+      {
+        path: '/tools/sqlLogFormat',
+        name: 'SqlLogFormat',
+        component: SqlLogFormat
+      },
+      {
+        path: '/tools/encryption',
+        name: 'Encryption',
+        component: Encryption
       },
       {
         path: '/tools/t2test',
