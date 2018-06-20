@@ -8,6 +8,7 @@ import JsonFormat from '@/components/tools/JsonFormat'
 import SqlLogFormat from '@/components/tools/SqlLogFormat'
 import Encryption from '@/components/tools/Encryption'
 import Bills from '@/components/Bills'
+import Assets from '@/components/bills/Assets'
 
 Vue.use(Router)
 
@@ -49,8 +50,12 @@ export default new Router({
     },
     {
       path: '/bills',
-      name: 'Bills',
-      component: Bills
+      component: Bills,
+      children: [{
+        path: '',
+        name: 'Assets',
+        component: Assets
+      }]
     },
     {
       path: '*',

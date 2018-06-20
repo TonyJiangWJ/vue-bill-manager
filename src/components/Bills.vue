@@ -1,5 +1,6 @@
 <template>
-  <div class="bills-container">
+  <div class="layui-container">
+    <router-view></router-view>
   </div>
 </template>
 
@@ -11,4 +12,7 @@ export default {
 </script>
 
 <style>
+.layui-container {
+  text-align: left;
+}
 </style>
