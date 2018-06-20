@@ -7,6 +7,7 @@ import CommonTools from '@/components/tools/CommonTools'
 import JsonFormat from '@/components/tools/JsonFormat'
 import SqlLogFormat from '@/components/tools/SqlLogFormat'
 import Encryption from '@/components/tools/Encryption'
+import Bills from '@/components/Bills'
 
 Vue.use(Router)
 
@@ -45,6 +46,11 @@ export default new Router({
         name: 'T2Test',
         component: T2Test
       }]
+    },
+    {
+      path: '/bills',
+      name: 'Bills',
+      component: Bills
     },
     {
       path: '*',

@@ -10,7 +10,9 @@
       </span>
     </div>
     <div class="tool-container">
-      <router-view></router-view>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>
