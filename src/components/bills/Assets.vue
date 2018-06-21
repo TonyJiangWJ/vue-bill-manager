@@ -6,7 +6,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">类别</label>
                 <div class="layui-input-inline">
-                    <input class="layui-input" v-model="assetType" type="text" readonly="readonly"/>
+                    <input class="layui-input" v-model="assetName" type="text" readonly="readonly"/>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -88,29 +88,16 @@
         <div>
             <h2>
                 <span style="margin-left: 5px;">总资产</span>
-                <span style="color: green;">{{totalAsset}}</span>
+                <span style="color: green;">{{totalAsset|longToString}}</span>
                 <button style="margin-left: 5px;" class="layui-btn layui-btn-xs layui-btn-normal"
-                        @click="expandAll">展开全部
+                        >展开全部
                 </button>
-                <button class="layui-btn layui-btn-xs layui-btn-warm" @click="collapseAll">关闭全部</button>
+                <button class="layui-btn layui-btn-xs layui-btn-warm" >关闭全部</button>
             </h2>
         </div>
         <div style="margin: 5px;">
             <div class="layui-collapse layui-text">
-                <div class="layui-colla-item">
-                    <div class="layui-colla-title">
-                        <h4><span>支付宝</span> <span>￥1000</span></h4>
-                    </div>
-                    <div class="layui-colla-content">
-                        <ul>
-                            <li @click="showAssetLayer">
-                                <input type="hidden" name="id"/>
-                                <span>余额</span>&nbsp;
-                                <span>￥0</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+              <asset-item v-for="assetModel in assetModels" :key="assetModel.type" @itemClick="handleAssetClick" :asset-model='assetModel'></asset-item>
             </div>
         </div>
     </div>
@@ -118,50 +105,36 @@
         <div>
             <h2>
                 <span style="margin-left: 5px;">总负债</span>
-                <span style="color: red;">￥6000</span>
+                <span style="color: red;">￥{{totalLiability|longToString}}</span>
                 <button style="margin-left: 5px;" class="layui-btn layui-btn-xs layui-btn-normal"
-                        @click="expandAll(this)">展开全部
+                       >展开全部
                 </button>
-                <button class="layui-btn layui-btn-xs layui-btn-warm" @click="collapseAll(this)">关闭全部</button>
+                <button class="layui-btn layui-btn-xs layui-btn-warm">关闭全部</button>
             </h2>
         </div>
         <div style="margin: 5px;">
             <div class="layui-collapse layui-text">
-                <div class="layui-colla-item">
-                    <div class="layui-colla-title">
-                        <h4>
-                            <span>支付宝</span>&nbsp;
-                            <span>￥2000</span>
-                        </h4>
-                    </div>
-                    <div class="layui-colla-content">
-                        <ul>
-                            <li>
-                                <span>花呗</span>&nbsp;
-                                <span>￥2000</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+              <liability-item v-for="liabilityModel in liabilityModels" :key="liabilityModel.type" :liability-model="liabilityModel"></liability-item>
             </div>
         </div>
     </div>
     <div class="layui-col-md12 layui-col-xs12">
         <div style="margin: 5px;">
-            <h2>净资产<span style="color: #ff0000;" :style="'color: '+(cleanAsset>0 ? '#008000' : '#ff0000')">800</span></h2>
+            <h2>净资产 <span style="color: #ff0000;" :style="'color: '+(cleanAsset>0 ? '#008000' : '#ff0000')">{{cleanAsset|longToString}}</span></h2>
         </div>
     </div>
     <div class="layui-col-md12 layui-col-xs12">
         <fieldset class="layui-elem-field layui-field-title">
             <legend>分期还款
-                <button class="layui-btn layui-btn-xs layui-btn-normal" @click="showAddLiability">添加分期账单</button>
+                <button class="layui-btn layui-btn-xs layui-btn-normal">添加分期账单</button>
             </legend>
         </fieldset>
 
         <div>
             <ul class="layui-timeline">
+              <liability-time-line-item v-for="monthLiabilityModel in monthLiabilityModels" :key="monthLiabilityModel.month" :month-liability-model="monthLiabilityModel"></liability-time-line-item>
                 <li class="layui-timeline-item">
-                    <i class="layui-icon layui-timeline-axis" @click="toggleHideOrExpand(this)">&#xe63f;</i>
+                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
                     <div class="layui-timeline-content layui-text">
                         <h3 class="layui-timeline-title">
                             <span>2018年2月</span>&nbsp;
@@ -176,7 +149,7 @@
                                 </h4>
                                 <div class="layui-colla-content">
                                     <ul>
-                                        <li @click="showLiabilityLayer(this)">
+                                        <li>
                                             <input type="hidden" name="id" value="1"/>
                                             <span>花呗</span>&nbsp;
                                             <span>￥2000</span>
@@ -199,12 +172,20 @@
 </template>
 
 <script>
+import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
+import AssetItem from '@/components/bills/asset/AssetItem'
+import LiabilityItem from '@/components/bills/liability/LiabilityItem'
+import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
+// mock data
+import AssetManageDTO from '@/js/AssetManageDTO'
+
 export default {
   name: 'Assets',
   data () {
     return {
       assetId: '',
       assetType: '',
+      assetName: '',
       assetAmount: '',
       liabilityType: '',
       liabilityAmount: '',
@@ -215,11 +196,46 @@ export default {
       repaymentDay: '',
       amount: '',
       totalAsset: '',
-      cleanAsset: '',
+      totalLiability: 0,
+      cleanAsset: 800,
       monthLiability: {
         assetAfterThisMonth: ''
-      }
+      },
+      // mockData
+      assetModels: AssetManageDTO.assetModels,
+      liabilityModels: AssetManageDTO.liabilityModels,
+      monthLiabilityModels: AssetManageDTO.monthLiabilityModels
     }
+  },
+  filters: {
+    longToString: function (val) {
+      return (val / 100).toFixed(2)
+    }
+  },
+  components: {
+    AssetItem, AssetItemDetail, LiabilityItem, LiabilityTimeLineItem
+  },
+  methods: {
+    handleAssetClick: function (payload) {
+      this.assetId = payload.assetId
+      this.assetName = payload.assetName
+      this.assetAmount = payload.assetAmount
+      var layer = require('layui-layer')
+      layer.open({
+        type: 1,
+        title: '修改资产信息',
+        content: $('#assetLayerContent'),
+        btn: ['确定', '关闭'],
+        yes: function () {
+
+        }
+      })
+    }
+  },
+  mounted () {
+    this.totalAsset = AssetManageDTO.totalAsset
+    this.cleanAsset = AssetManageDTO.cleanAsset
+    this.totalLiability = AssetManageDTO.totalLiability
   }
 }
 </script>
