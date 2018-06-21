@@ -89,10 +89,6 @@
             <h2>
                 <span style="margin-left: 5px;">总资产</span>
                 <span style="color: green;">{{totalAsset|longToString}}</span>
-                <button style="margin-left: 5px;" class="layui-btn layui-btn-xs layui-btn-normal"
-                        >展开全部
-                </button>
-                <button class="layui-btn layui-btn-xs layui-btn-warm" >关闭全部</button>
             </h2>
         </div>
         <div style="margin: 5px;">
@@ -106,10 +102,6 @@
             <h2>
                 <span style="margin-left: 5px;">总负债</span>
                 <span style="color: red;">￥{{totalLiability|longToString}}</span>
-                <button style="margin-left: 5px;" class="layui-btn layui-btn-xs layui-btn-normal"
-                       >展开全部
-                </button>
-                <button class="layui-btn layui-btn-xs layui-btn-warm">关闭全部</button>
             </h2>
         </div>
         <div style="margin: 5px;">
@@ -132,39 +124,10 @@
 
         <div>
             <ul class="layui-timeline">
-              <liability-time-line-item v-for="monthLiabilityModel in monthLiabilityModels" :key="monthLiabilityModel.month" :month-liability-model="monthLiabilityModel"></liability-time-line-item>
-                <li class="layui-timeline-item">
-                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
-                    <div class="layui-timeline-content layui-text">
-                        <h3 class="layui-timeline-title">
-                            <span>2018年2月</span>&nbsp;
-                            <span>￥6000</span>
-                            <span :style="'color: '+monthLiability.assetAfterThisMonth>0 ? '#008000' : '#ff0000'">￥6000</span>
-                        </h3>
-                        <div style="display: none" class="layui-collapse">
-                            <div class="layui-colla-item">
-                                <h4 class="layui-colla-title">
-                                    <span>支付宝</span>&nbsp;
-                                    <span>￥2000</span>
-                                </h4>
-                                <div class="layui-colla-content">
-                                    <ul>
-                                        <li>
-                                            <input type="hidden" name="id" value="1"/>
-                                            <span>花呗</span>&nbsp;
-                                            <span>￥2000</span>
-                                            <span>
-                                                (<span style="color: #20f700;">100</span>)
-                                            </span>
-                                            &nbsp;
-                                            <span>1</span><span>/</span><span>12</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+              <liability-time-line-item v-for="monthLiabilityModel in monthLiabilityModels"
+                    :key="monthLiabilityModel.month"
+                    :month-liability-model="monthLiabilityModel">
+              </liability-time-line-item>
             </ul>
         </div>
     </div>

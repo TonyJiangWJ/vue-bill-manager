@@ -1,10 +1,10 @@
 <template>
-  <div class="layui-colla-item" @click="toggleShow">
-    <h4 class="layui-colla-title">
+  <div class="layui-colla-item">
+    <h4 class="layui-colla-title" @click="toggleShow">
         <span>{{name}}</span>&nbsp;
         <span>￥{{total|longToString}}</span>
     </h4>
-    <transition>
+    <transition name="fade">
       <div class="layui-colla-content layui-show" v-if="show">
           <ul>
               <li v-for="liability in liabilityList" :key="liability.name+liability.amount" @click.stop="clickTimeLineItem(liability)">
@@ -52,3 +52,12 @@ export default {
   }
 }
 </script>
+
+<style lang="postcss">
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

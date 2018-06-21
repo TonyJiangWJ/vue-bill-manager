@@ -6,14 +6,16 @@
             <span>￥{{liabilityAmount|longToString}}</span>
         </h4>
     </div>
-    <div class="layui-colla-content" :class="show?'layui-show':''">
-        <ul>
-            <li v-for="liability in liabilityList" :key="liability.id">
-                <span>{{liability.name}}</span>&nbsp;
-                <span>￥{{liability.amount|longToString}}</span>
-            </li>
-        </ul>
-    </div>
+    <transition name="fade">
+      <div class="layui-colla-content layui-show" v-if="show">
+          <ul>
+              <li v-for="liability in liabilityList" :key="liability.id" @click.stop="show=show">
+                  <span>{{liability.name}}</span>&nbsp;
+                  <span>￥{{liability.amount|longToString}}</span>
+              </li>
+          </ul>
+      </div>
+    </transition>
   </div>
 </template>
 
