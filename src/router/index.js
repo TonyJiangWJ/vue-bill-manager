@@ -9,6 +9,7 @@ import SqlLogFormat from '@/components/tools/SqlLogFormat'
 import Encryption from '@/components/tools/Encryption'
 import Bills from '@/components/Bills'
 import Assets from '@/components/bills/Assets'
+import Login from '@/components/Login'
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ export default new Router({
         name: 'Assets',
         component: Assets
       }]
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
     },
     {
       path: '*',

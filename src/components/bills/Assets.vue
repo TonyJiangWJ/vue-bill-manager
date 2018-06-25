@@ -141,7 +141,7 @@ import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
 // mock data
 import AssetManageDTO from '@/js/AssetManageDTO'
-
+import { requestAssetManage } from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -196,9 +196,12 @@ export default {
     }
   },
   mounted () {
-    this.totalAsset = AssetManageDTO.totalAsset
-    this.cleanAsset = AssetManageDTO.cleanAsset
-    this.totalLiability = AssetManageDTO.totalLiability
+    requestAssetManage().then((resp) => {
+      this.AssetManageDTO = resp.assetManage
+      this.totalAsset = AssetManageDTO.totalAsset
+      this.cleanAsset = AssetManageDTO.cleanAsset
+      this.totalLiability = AssetManageDTO.totalLiability
+    })
   }
 }
 </script>

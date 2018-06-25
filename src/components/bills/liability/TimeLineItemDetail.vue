@@ -15,7 +15,8 @@
                       (<span style="color: #20f700;">{{liability.paid|longToString}}</span>)
                   </span>
                   &nbsp;
-                  <span>{{liability.index}}</span><span>/</span><span>{{liability.installment}}</span>
+                  <span>{{liability.index}}</span><span>/</span><span>{{liability.installment}}</span>&nbsp;
+            <span>还款日：{{liability.repaymentDay}}</span>
               </li>
           </ul>
       </div>
