@@ -2,16 +2,32 @@ import axios from 'axios'
 import qs from 'qs'
 import JSEncrypt from 'JSEncrypt'
 import {
-  host, rsaPubKey
+  host,
+  rsaPubKey
 } from '@/js/config.js'
 
+// 允许跨域携带cookie
+axios.defaults.withCredentials = true
+
 export function requestAssetManage () {
-  return sendAjax('/asset/manage', {})
+  return sendAjax('/bootDemo/asset/manage', {})
 }
 
 export function login (data) {
   data.password = getRsaCipher(data.password, rsaPubKey)
   return sendAjax('/bootDemo/user/login', data)
+}
+
+export function logout () {
+  return sendAjax('/bootDemo/user/logout', {})
+}
+
+export function checkLoginStatus () {
+  return axios.post(`${host}/bootDemo/login/status`)
+    .then((response) => {
+      return Promise.resolve(response.data)
+    })
+    .catch(errorLog)
 }
 
 /**
@@ -35,11 +51,12 @@ function errorLog (e) {
 function sendAjax (url, data) {
   return axios.post(`${host}${url}`, qs.stringify(data))
     .then((response) => {
-      if (response.code === '0006') {
+      if (response.data.code === '0006') {
         console.log('未登录')
-        window.location.href = '/'
+        window.location.href = '#/login'
+      } else {
+        return Promise.resolve(response.data)
       }
-      return Promise.resolve(response.data)
     })
     .catch(errorLog)
 }

@@ -139,8 +139,6 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-// mock data
-import AssetManageDTO from '@/js/AssetManageDTO'
 import { requestAssetManage } from '@/js/api.js'
 export default {
   name: 'Assets',
@@ -164,10 +162,9 @@ export default {
       monthLiability: {
         assetAfterThisMonth: ''
       },
-      // mockData
-      assetModels: AssetManageDTO.assetModels,
-      liabilityModels: AssetManageDTO.liabilityModels,
-      monthLiabilityModels: AssetManageDTO.monthLiabilityModels
+      assetModels: [],
+      liabilityModels: [],
+      monthLiabilityModels: []
     }
   },
   filters: {
@@ -197,10 +194,15 @@ export default {
   },
   mounted () {
     requestAssetManage().then((resp) => {
-      this.AssetManageDTO = resp.assetManage
-      this.totalAsset = AssetManageDTO.totalAsset
-      this.cleanAsset = AssetManageDTO.cleanAsset
-      this.totalLiability = AssetManageDTO.totalLiability
+      if (resp && resp.code === '0001') {
+        let assetManageDTO = resp.assetManage
+        this.totalAsset = assetManageDTO.totalAsset
+        this.cleanAsset = assetManageDTO.cleanAsset
+        this.totalLiability = assetManageDTO.totalLiability
+        this.assetModels = assetManageDTO.assetModels
+        this.liabilityModels = assetManageDTO.liabilityModels
+        this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
+      }
     })
   }
 }

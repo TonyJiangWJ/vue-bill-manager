@@ -1,6 +1,6 @@
 <template>
     <div class="layui-container">
-      <div v-if="!logined">
+      <div>
         <div class="layui-form login-container">
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名</label>
@@ -16,78 +16,48 @@
                 </div>
                 <span v-if="showPwdError" class="error">密码最短6位</span>
             </div>
-            <div v-if="loginError" class="layui-form-item">
-              <span class="error">账号或密码错误</span>
+            <div class="layui-form-item">
+                <label class="layui-form-label">重复密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" class="layui-input" name="confirmPwd" v-model="confirmPwd" placeholder="密码"/>
+                </div>
+                <span v-if="showConfirmPwdError" class="error">密码不一致</span>
             </div>
-            <button class="layui-btn layui-btn-radius" style="width: 100%;" @click="doLogin">登录</button>
+            <div v-if="registerError" class="layui-form-item">
+              <span class="error">注册失败</span>
+            </div>
+            <button class="layui-btn layui-btn-radius" style="width: 100%;" @click="doRegister">注册</button>
         </div>
-    </div>
-    <div v-else>
-      <div class="layui-form login-container">
-        <div class="layui-form-item">
-          <button class="layui-btn layui-btn-radius" style="width: 100%;" @click="logout">退出登录</button>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { login, logout, checkLoginStatus } from '@/js/api'
+import { checkLoginStatus } from '@/js/api'
 export default {
   name: 'Login',
   data () {
     return {
       showUserNameError: false,
       showPwdError: false,
-      loginError: false,
+      showConfirmPwdError: false,
+      registerError: false,
       userName: '',
       password: '',
-      logined: false
+      confirmPwd: ''
     }
   },
   methods: {
-    doLogin: function () {
-      if (!this.password || this.password.length < 6) {
-        this.showPwdError = true
-      } else {
-        this.showPwdError = false
-      }
-      if (!this.userName) {
-        this.showUserNameError = true
-      } else {
-        this.showUserNameError = false
-      }
-      if (this.showUserNameError || this.showPwdError) {
-        return
-      }
-      let data = {}
-      data.userName = this.userName
-      data.password = this.password
-      login(data).then((resp) => {
-        if (resp.code === '0001') {
-          console.log('登录成功')
-          this.loginError = false
-          this.$router.push('/')
-        } else {
-          console.log('登录失败')
-          this.loginError = true
-        }
-      })
-    },
-    logout: function () {
-      logout().then((resp) => {
-        console.log('退出成功')
-        this.logined = false
-      })
+    doRegister: function () {
+      this.showUserNameError = !this.userName
+      this.showPwdError = !this.password || this.password.length < 6
+      this.showConfirmPwdError = !this.confirmPwd
     }
   },
   created () {
     checkLoginStatus().then((resp) => {
       if (resp.code === '0001') {
-        this.logined = true
-      } else {
-        this.logined = false
+        this.$router.push('/login')
       }
     })
   }

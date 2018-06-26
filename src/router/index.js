@@ -10,6 +10,7 @@ import Encryption from '@/components/tools/Encryption'
 import Bills from '@/components/Bills'
 import Assets from '@/components/bills/Assets'
 import Login from '@/components/Login'
+import Register from '@/components/Register'
 
 Vue.use(Router)
 
@@ -62,6 +63,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
     },
     {
       path: '*',
