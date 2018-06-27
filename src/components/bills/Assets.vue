@@ -45,7 +45,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">父类别</label>
                 <div class="layui-input-inline">
-                    <select v-model="liabilityParent" class="layui-select">
+                    <select v-model="liabilityParent" class="layui-select layui-show">
                         <option value="">未选择</option>
                         <option>信用卡</option>
                         <option>京东</option>
@@ -56,7 +56,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">子类别</label>
                 <div class="layui-input-inline">
-                    <select v-model="liabilityChildType" class="layui-select">
+                    <select v-model="liabilityChildType" class="layui-select layui-show">
                         <option value="">未选择</option>
                     </select>
                 </div>
@@ -118,13 +118,13 @@
     <div class="layui-col-md12 layui-col-xs12">
         <fieldset class="layui-elem-field layui-field-title">
             <legend>分期还款
-                <button class="layui-btn layui-btn-xs layui-btn-normal">添加分期账单</button>
+                <button class="layui-btn layui-btn-xs layui-btn-normal" @click="addLiability">添加分期账单</button>
             </legend>
         </fieldset>
 
         <div>
             <ul class="layui-timeline">
-              <liability-time-line-item v-for="monthLiabilityModel in monthLiabilityModels"
+              <liability-time-line-item @timeLineClick="handleTimeLineClick" v-for="monthLiabilityModel in monthLiabilityModels"
                     :key="monthLiabilityModel.month"
                     :month-liability-model="monthLiabilityModel">
               </liability-time-line-item>
@@ -139,7 +139,7 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import { requestAssetManage } from '@/js/api.js'
+import { requestAssetManage, checkLoginStatus } from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -190,18 +190,51 @@ export default {
 
         }
       })
+    },
+    handleTimeLineClick: function (payload) {
+      this.liabilityType = payload.type
+      this.liabilityAmount = payload.amount
+      this.liabilityPaid = payload.paid
+      var layer = require('layui-layer')
+      layer.open({
+        type: 1,
+        title: '分期信息',
+        content: $('#liabilityLayerContent'),
+        btn: ['确定', '关闭'],
+        yes: function () {
+
+        }
+      })
+    },
+    addLiability: function () {
+      var layer = require('layui-layer')
+      layer.open({
+        type: 1,
+        title: '添加分期账单',
+        content: $('#addLiabilityLayerContent'),
+        btn: ['确定', '关闭'],
+        yes: function () {
+
+        }
+      })
     }
   },
-  mounted () {
-    requestAssetManage().then((resp) => {
-      if (resp && resp.code === '0001') {
-        let assetManageDTO = resp.assetManage
-        this.totalAsset = assetManageDTO.totalAsset
-        this.cleanAsset = assetManageDTO.cleanAsset
-        this.totalLiability = assetManageDTO.totalLiability
-        this.assetModels = assetManageDTO.assetModels
-        this.liabilityModels = assetManageDTO.liabilityModels
-        this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
+  created () {
+    checkLoginStatus().then((resp) => {
+      if (resp.code !== '0001') {
+        this.$router.push('/login')
+      } else {
+        requestAssetManage().then((resp) => {
+          if (resp && resp.code === '0001') {
+            let assetManageDTO = resp.assetManage
+            this.totalAsset = assetManageDTO.totalAsset
+            this.cleanAsset = assetManageDTO.cleanAsset
+            this.totalLiability = assetManageDTO.totalLiability
+            this.assetModels = assetManageDTO.assetModels
+            this.liabilityModels = assetManageDTO.liabilityModels
+            this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
+          }
+        })
       }
     })
   }

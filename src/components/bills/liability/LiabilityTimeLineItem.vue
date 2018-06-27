@@ -9,7 +9,7 @@
         </h3>
         <transition name="fade">
           <div v-if="show" class="layui-collapse">
-            <time-line-item-detail v-for="liabilityModel in liabilityModels" :key="liabilityModel.name+month" :liability-model="liabilityModel"></time-line-item-detail>
+            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in liabilityModels" :key="liabilityModel.name+month" :liability-model="liabilityModel"></time-line-item-detail>
           </div>
         </transition>
     </div>
@@ -44,6 +44,9 @@ export default {
   methods: {
     toggleShowDetail: function () {
       this.show = !this.show
+    },
+    handleTimeLineClick: function (payload) {
+      this.$emit('timeLineClick', payload)
     }
   }
 }
