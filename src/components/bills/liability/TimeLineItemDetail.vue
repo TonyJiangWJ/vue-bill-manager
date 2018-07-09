@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     clickTimeLineItem: function (liability) {
-      console.log('点击了timeLine中的内容' + JSON.stringify(liability))
+      this.debug('点击了timeLine中的内容' + JSON.stringify(liability))
       this.$emit('timeLineClick', liability)
     },
     toggleShow: function () {

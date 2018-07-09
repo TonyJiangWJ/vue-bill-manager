@@ -139,7 +139,7 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import { requestAssetManage, checkLoginStatus } from '@/js/api.js'
+import { requestAssetManage } from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -157,8 +157,8 @@ export default {
       repaymentDay: '',
       amount: '',
       totalAsset: '',
-      totalLiability: 0,
-      cleanAsset: 800,
+      totalLiability: '',
+      cleanAsset: '',
       monthLiability: {
         assetAfterThisMonth: ''
       },
@@ -220,21 +220,15 @@ export default {
     }
   },
   created () {
-    checkLoginStatus().then((resp) => {
-      if (resp.code !== '0001') {
-        this.$router.push('/login')
-      } else {
-        requestAssetManage().then((resp) => {
-          if (resp && resp.code === '0001') {
-            let assetManageDTO = resp.assetManage
-            this.totalAsset = assetManageDTO.totalAsset
-            this.cleanAsset = assetManageDTO.cleanAsset
-            this.totalLiability = assetManageDTO.totalLiability
-            this.assetModels = assetManageDTO.assetModels
-            this.liabilityModels = assetManageDTO.liabilityModels
-            this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
-          }
-        })
+    requestAssetManage().then((resp) => {
+      if (resp && resp.code === '0001') {
+        let assetManageDTO = resp.assetManage
+        this.totalAsset = assetManageDTO.totalAsset
+        this.cleanAsset = assetManageDTO.cleanAsset
+        this.totalLiability = assetManageDTO.totalLiability
+        this.assetModels = assetManageDTO.assetModels
+        this.liabilityModels = assetManageDTO.liabilityModels
+        this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
       }
     })
   }

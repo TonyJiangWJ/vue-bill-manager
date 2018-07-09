@@ -172,7 +172,6 @@
 import { Base64 } from 'js-base64'
 import { md5 } from 'md5js'
 import JSEncrypt from 'JSEncrypt'
-import { dateFormat } from '@/js/DateUtil'
 import '@/assets/css/modules/laydate/default/laydate.css'
 
 export default {
@@ -200,14 +199,14 @@ export default {
       rsaDecryptContent: '',
       srcStr: '',
       destStr: '',
-      nowDateTime: dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
+      nowDateTime: this.dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
     }
   },
   methods: {
     ttString: function () {
       var stamp = this.timestamp13
       stamp = parseFloat(stamp)
-      this.timeString = dateFormat(new Date(stamp), 'yyyy-MM-dd HH:mm:ss')
+      this.timeString = this.dateFormat(new Date(stamp), 'yyyy-MM-dd HH:mm:ss')
     },
     ttStamp: function () {
       this.timestamp13 = new Date(this.timeString).getTime()
@@ -251,9 +250,9 @@ export default {
       var startDate = new Date(this.startDate)
       var days = this.daysBtw
       var targetDate = new Date(startDate.getTime() + 3600 * 24 * 1000 * parseInt(days))
-      this.endDate = dateFormat(new Date(targetDate), 'yyyy-MM-dd')
-      this.endDateDisplay = dateFormat(new Date(targetDate), 'yyyy-MM-dd')
-      this.displayDays = dateFormat(new Date(targetDate), 'yyyy-MM-dd EE')
+      this.endDate = this.dateFormat(new Date(targetDate), 'yyyy-MM-dd')
+      this.endDateDisplay = this.dateFormat(new Date(targetDate), 'yyyy-MM-dd')
+      this.displayDays = this.dateFormat(new Date(targetDate), 'yyyy-MM-dd EE')
     },
     encodeBase64: function () {
       var encodeStr = Base64.encode(this.base64Source)
@@ -316,11 +315,12 @@ export default {
     intervalRefresh: function () {
       var self = this
       setInterval(function () {
-        self.nowDateTime = dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
+        self.nowDateTime = self.dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
       }, 1000)
     },
     renderLayDate: function () {
-      console.log('渲染laydate')
+      this.debug('渲染laydate')
+      this.dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
       var layuiLaydate = require('layui-laydate')
       var self = this
       layuiLaydate.render({

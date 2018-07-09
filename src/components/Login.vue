@@ -66,18 +66,18 @@ export default {
       data.password = this.password
       login(data).then((resp) => {
         if (resp.code === '0001') {
-          console.log('登录成功')
+          this.debug('登录成功')
           this.loginError = false
           this.$router.push('/')
         } else {
-          console.log('登录失败')
+          this.debug('登录失败')
           this.loginError = true
         }
       })
     },
     logout: function () {
       logout().then((resp) => {
-        console.log('退出成功')
+        this.debug('退出成功')
         this.logined = false
       })
     }

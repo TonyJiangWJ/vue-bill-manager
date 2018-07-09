@@ -11,10 +11,12 @@ import Bills from '@/components/Bills'
 import Assets from '@/components/bills/Assets'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
+import { checkLoginStatus } from '@/js/api.js'
+import { needLogin } from '@/js/config.js'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -76,3 +78,24 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  // ...
+  if (needLogin.indexOf(to.path) > -1) {
+    if (to.path === '/login') {
+      next()
+    } else {
+      checkLoginStatus().then((resp) => {
+        if (!resp || resp.code !== '0001') {
+          next('/login')
+        } else {
+          next()
+        }
+      })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

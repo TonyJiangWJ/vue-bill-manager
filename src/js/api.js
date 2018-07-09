@@ -44,7 +44,7 @@ function getRsaCipher (str, pubKey) {
 }
 
 function errorLog (e) {
-  console.log('error' + e)
+  this.debug('error' + e)
 }
 
 // 发送ajax请求
@@ -52,7 +52,7 @@ function sendAjax (url, data) {
   return axios.post(`${host}${url}`, qs.stringify(data))
     .then((response) => {
       if (response.data.code === '0006') {
-        console.log('未登录')
+        this.debug('未登录')
         window.location.href = '#/login'
       } else {
         return Promise.resolve(response.data)
