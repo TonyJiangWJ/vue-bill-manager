@@ -14,3 +14,13 @@ export default {
     }
   }
 }
+
+export const debug = function (str) {
+  if (enableLog) {
+    console.log(str)
+  }
+}
+
+export const log = function (str) {
+  console.log(str)
+}

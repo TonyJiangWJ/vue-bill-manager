@@ -2,14 +2,14 @@
   <div class="layui-colla-item" @click="toggleShow">
     <div class="layui-colla-title">
         <h4>
-            <span>{{liabilityName}}</span>&nbsp;
-            <span>￥{{liabilityAmount|longToString}}</span>
+            <span>{{liabilityModel.name}}</span>&nbsp;
+            <span>￥{{liabilityModel.total|longToString}}</span>
         </h4>
     </div>
     <transition name="fade">
       <div class="layui-colla-content layui-show" v-if="show">
           <ul>
-              <li v-for="liability in liabilityList" :key="liability.id" @click.stop="show=show">
+              <li v-for="liability in liabilityModel.liabilityList" :key="liability.id" @click.stop="show=show">
                   <span>{{liability.name}}</span>&nbsp;
                   <span>￥{{liability.amount|longToString}}</span>
               </li>
@@ -27,10 +27,7 @@ export default {
   },
   data () {
     return {
-      show: false,
-      liabilityList: this.liabilityModel.liabilityList,
-      liabilityName: this.liabilityModel.name,
-      liabilityAmount: this.liabilityModel.total
+      show: false
     }
   },
   filters: {

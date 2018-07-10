@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import iView from 'iview'
 import HelloWorld from '@/components/HelloWorld'
 import Tools from '@/components/Tools'
 import T2Test from '@/components/tools/T2Test'
@@ -11,6 +12,8 @@ import Bills from '@/components/Bills'
 import Assets from '@/components/bills/Assets'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
+import AssetTypes from '@/components/AssetTypes'
+
 import { checkLoginStatus } from '@/js/api.js'
 import { needLogin } from '@/js/config.js'
 
@@ -72,6 +75,11 @@ const router = new Router({
       component: Register
     },
     {
+      path: '/asset/type',
+      name: 'AssetTypes',
+      component: AssetTypes
+    },
+    {
       path: '*',
       name: 'NotFound',
       component: HelloWorld
@@ -80,6 +88,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start()
   // ...
   if (needLogin.indexOf(to.path) > -1) {
     if (to.path === '/login') {
@@ -96,6 +105,10 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
+})
+
+router.afterEach(route => {
+  iView.LoadingBar.finish()
 })
 
 export default router

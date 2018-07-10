@@ -139,7 +139,7 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import { requestAssetManage } from '@/js/api.js'
+import { requestAssetManage, updateAsset, updateLiability } from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -181,28 +181,54 @@ export default {
       this.assetName = payload.assetName
       this.assetAmount = payload.assetAmount
       var layer = require('layui-layer')
+      var self = this
       layer.open({
         type: 1,
         title: '修改资产信息',
         content: $('#assetLayerContent'),
         btn: ['确定', '关闭'],
-        yes: function () {
-
+        yes: function (index) {
+          let data = {
+            id: self.assetId,
+            amount: (self.assetAmount * 100).toFixed(0)
+          }
+          self.debug('data:' + JSON.stringify(data))
+          updateAsset(data).then((resp) => {
+            if (resp.code === '0001') {
+              layer.close(index)
+              self.loadAssetInfo()
+            } else {
+              layer.alert('修改失败，请重试！')
+            }
+          })
         }
       })
     },
     handleTimeLineClick: function (payload) {
       this.liabilityType = payload.type
-      this.liabilityAmount = payload.amount
+      this.liabilityAmount = (payload.amount / 100).toFixed(2)
       this.liabilityPaid = payload.paid
       var layer = require('layui-layer')
+      let self = this
       layer.open({
         type: 1,
         title: '分期信息',
         content: $('#liabilityLayerContent'),
         btn: ['确定', '关闭'],
-        yes: function () {
-
+        yes: function (index) {
+          let data = {
+            id: payload.id,
+            amount: (self.liabilityAmount * 100).toFixed(0),
+            paid: self.liabilityPaid
+          }
+          updateLiability(data).then((resp) => {
+            if (resp.code === '0001') {
+              layer.close(index)
+              self.loadAssetInfo()
+            } else {
+              layer.alert('修改失败，请重试！')
+            }
+          })
         }
       })
     },
@@ -217,20 +243,24 @@ export default {
 
         }
       })
+    },
+    loadAssetInfo: function () {
+      requestAssetManage().then((resp) => {
+        if (resp && resp.code === '0001') {
+          let assetManageDTO = resp.assetManage
+          this.totalAsset = assetManageDTO.totalAsset
+          this.cleanAsset = assetManageDTO.cleanAsset
+          this.totalLiability = assetManageDTO.totalLiability
+          this.assetModels = assetManageDTO.assetModels
+          this.assetModels.splice(3)
+          this.liabilityModels = assetManageDTO.liabilityModels
+          this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
+        }
+      })
     }
   },
   created () {
-    requestAssetManage().then((resp) => {
-      if (resp && resp.code === '0001') {
-        let assetManageDTO = resp.assetManage
-        this.totalAsset = assetManageDTO.totalAsset
-        this.cleanAsset = assetManageDTO.cleanAsset
-        this.totalLiability = assetManageDTO.totalLiability
-        this.assetModels = assetManageDTO.assetModels
-        this.liabilityModels = assetManageDTO.liabilityModels
-        this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
-      }
-    })
+    this.loadAssetInfo()
   }
 }
 </script>

@@ -1,10 +1,12 @@
 import axios from 'axios'
 import qs from 'qs'
 import JSEncrypt from 'JSEncrypt'
+import iView from 'iview'
 import {
   host,
   rsaPubKey
 } from '@/js/config.js'
+import { debug } from '@/js/LogUtil'
 
 // 允许跨域携带cookie
 axios.defaults.withCredentials = true
@@ -30,6 +32,22 @@ export function checkLoginStatus () {
     .catch(errorLog)
 }
 
+export function updateAsset (data) {
+  return sendAjax('/bootDemo/asset/update', data)
+}
+
+export function updateLiability (data) {
+  return sendAjax('/bootDemo/liability/update', data)
+}
+
+export function getLiabilityParents () {
+  return sendAjax('/bootDemo/list/asset/parent/types/L')
+}
+
+export function getAssetParents () {
+  return sendAjax('/bootDemo/list/asset/parent/types/A')
+}
+
 /**
  * rsa加密
  * @param str 待加密文本
@@ -44,18 +62,27 @@ function getRsaCipher (str, pubKey) {
 }
 
 function errorLog (e) {
-  this.debug('error' + e)
+  iView.LoadingBar.error()
+  debug('error' + e)
 }
 
 // 发送ajax请求
 function sendAjax (url, data) {
+  debug('request data:' + JSON.stringify(data))
+  iView.LoadingBar.start()
   return axios.post(`${host}${url}`, qs.stringify(data))
     .then((response) => {
       if (response.data.code === '0006') {
-        this.debug('未登录')
+        debug('未登录')
+        iView.LoadingBar.finish()
         window.location.href = '#/login'
       } else {
-        return Promise.resolve(response.data)
+        iView.LoadingBar.finish()
+        if (response.data) {
+          return Promise.resolve(response.data)
+        } else {
+          errorLog('请求失败' + JSON.stringify(response))
+        }
       }
     })
     .catch(errorLog)

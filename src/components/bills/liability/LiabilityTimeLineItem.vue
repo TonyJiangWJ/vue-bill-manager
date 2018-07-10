@@ -3,13 +3,13 @@
     <i class="layui-icon layui-timeline-axis" @click="toggleShowDetail">&#xe63f;</i>
     <div class="layui-timeline-content layui-text">
         <h3 class="layui-timeline-title">
-            <span>{{month}}</span>&nbsp;
-            <span>￥{{total|longToString}}</span>
-            <span :style="'color: '+assetAfterThisMonth>0 ? '#008000' : '#ff0000'">￥{{assetAfterThisMonth|longToString}}</span>
+            <span>{{monthLiabilityModel.month}}</span>&nbsp;
+            <span>￥{{monthLiabilityModel.total|longToString}}</span>
+            <span :style="'color: '+monthLiabilityModel.assetAfterThisMonth>0 ? '#008000' : '#ff0000'">￥{{monthLiabilityModel.assetAfterThisMonth|longToString}}</span>
         </h3>
         <transition name="fade">
           <div v-if="show" class="layui-collapse">
-            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in liabilityModels" :key="liabilityModel.name+month" :liability-model="liabilityModel"></time-line-item-detail>
+            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in monthLiabilityModel.liabilityModels" :key="liabilityModel.name+monthLiabilityModel.month" :liability-model="liabilityModel"></time-line-item-detail>
           </div>
         </transition>
     </div>
@@ -29,10 +29,6 @@ export default {
   },
   data () {
     return {
-      assetAfterThisMonth: this.monthLiabilityModel.assetAfterThisMonth,
-      liabilityModels: this.monthLiabilityModel.liabilityModels,
-      month: this.monthLiabilityModel.month,
-      total: this.monthLiabilityModel.total,
       show: false
     }
   },
