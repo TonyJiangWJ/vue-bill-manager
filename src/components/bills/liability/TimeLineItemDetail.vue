@@ -1,7 +1,7 @@
 <template>
   <div class="layui-colla-item">
     <h4 class="layui-colla-title" @click="toggleShow">
-        <span>{{liabilityModel.name}}</span>&nbsp;
+        <span>{{liabilityModel.type}}</span>&nbsp;
         <span>￥{{liabilityModel.total|longToString}}</span>
     </h4>
     <transition name="fade">
@@ -11,7 +11,7 @@
                   <input type="hidden" name="id" :value="liability.id"/>
                   <span>{{liability.name}}</span>&nbsp;
                   <span>￥{{liability.amount|longToString}}</span>
-                  <span :style="liability.paid>0?'display:block;':'display:none;'">
+                  <span :style="liability.paid>0?'':'display:none;'">
                       (<span style="color: #20f700;">{{liability.paid|longToString}}</span>)
                   </span>
                   &nbsp;

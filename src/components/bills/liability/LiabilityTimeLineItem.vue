@@ -5,11 +5,11 @@
         <h3 class="layui-timeline-title">
             <span>{{monthLiabilityModel.month}}</span>&nbsp;
             <span>￥{{monthLiabilityModel.total|longToString}}</span>
-            <span :style="'color: '+monthLiabilityModel.assetAfterThisMonth>0 ? '#008000' : '#ff0000'">￥{{monthLiabilityModel.assetAfterThisMonth|longToString}}</span>
+            <span :style="{ color: monthLiabilityModel.assetAfterThisMonth>0 ? '#008000' : '#ff0000' }">￥{{monthLiabilityModel.assetAfterThisMonth|longToString}}</span>
         </h3>
         <transition name="fade">
           <div v-if="show" class="layui-collapse">
-            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in monthLiabilityModel.liabilityModels" :key="liabilityModel.name+monthLiabilityModel.month" :liability-model="liabilityModel"></time-line-item-detail>
+            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in monthLiabilityModel.liabilityModels" :key="liabilityModel.type+monthLiabilityModel.month" :liability-model="liabilityModel"></time-line-item-detail>
           </div>
         </transition>
     </div>

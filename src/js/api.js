@@ -48,6 +48,18 @@ export function getAssetParents () {
   return sendAjax('/bootDemo/list/asset/parent/types/A')
 }
 
+export function addAssetType (data) {
+  return sendAjax('/bootDemo/asset/types/put', data)
+}
+
+export function getChildByParent (data) {
+  return sendAjax('/bootDemo/list/asset/type/by/parent/id', data)
+}
+
+export function addLiability (data) {
+  return sendAjax('/bootDemo/liability/put', data)
+}
+
 /**
  * rsa加密
  * @param str 待加密文本

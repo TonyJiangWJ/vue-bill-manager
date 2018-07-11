@@ -44,21 +44,18 @@
         <div class="layui-form" style="margin: 20px 20px 20px 0;">
             <div class="layui-form-item">
                 <label class="layui-form-label">父类别</label>
-                <div class="layui-input-inline">
-                    <select v-model="liabilityParent" class="layui-select layui-show">
-                        <option value="">未选择</option>
-                        <option>信用卡</option>
-                        <option>京东</option>
-                        <option>小米</option>
-                    </select>
+                <div class="layui-input-inline select-parent">
+                    <Select v-model="liabilityParent">
+                      <Option v-for="parentType in liabilityParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
+                    </Select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">子类别</label>
                 <div class="layui-input-inline">
-                    <select v-model="liabilityChildType" class="layui-select layui-show">
-                        <option value="">未选择</option>
-                    </select>
+                    <Select v-model="liabilityChildType">
+                      <Option v-for="childType in liabilityChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
+                    </Select>
                 </div>
             </div>
             <div class="layui-form-item">
@@ -68,15 +65,15 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">首期还款日</label>
+                <label class="layui-form-label">首期还款日:{{repaymentDay}}</label>
                 <div class="layui-input-inline">
-                    <input name="repaymentDay" v-model="repaymentDay" type="text" class="layui-input" placeholder="首期还款日"/>
+                    <input id="repaymentDay" v-model="repaymentDay" type="text" class="layui-input" placeholder="首期还款日"/>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">总金额</label>
                 <div class="layui-input-inline">
-                    <input name="amount" v-model="amount" type="number" class="layui-input" placeholder="总金额"/>
+                    <input name="amount" v-model="liabilityAmount" type="number" class="layui-input" placeholder="总金额"/>
                 </div>
             </div>
         </div>
@@ -139,7 +136,11 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import { requestAssetManage, updateAsset, updateLiability } from '@/js/api.js'
+import '@/assets/css/modules/laydate/default/laydate.css'
+import { requestAssetManage, updateAsset, updateLiability,
+  getLiabilityParents, getAssetParents, getChildByParent,
+  addLiability
+} from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -164,7 +165,11 @@ export default {
       },
       assetModels: [],
       liabilityModels: [],
-      monthLiabilityModels: []
+      monthLiabilityModels: [],
+      liabilityParentList: [],
+      liabilityChildList: [],
+      assetParentList: [],
+      assetChildList: []
     }
   },
   filters: {
@@ -219,7 +224,7 @@ export default {
           let data = {
             id: payload.id,
             amount: (self.liabilityAmount * 100).toFixed(0),
-            paid: self.liabilityPaid
+            paid: (self.liabilityPaid * 100).toFixed(0)
           }
           updateLiability(data).then((resp) => {
             if (resp.code === '0001') {
@@ -234,13 +239,35 @@ export default {
     },
     addLiability: function () {
       var layer = require('layui-layer')
+      let self = this
       layer.open({
         type: 1,
         title: '添加分期账单',
         content: $('#addLiabilityLayerContent'),
         btn: ['确定', '关闭'],
-        yes: function () {
+        yes: function (index) {
+          let data = {
+            repaymentDay: self.repaymentDay,
+            installment: self.installment,
+            type: self.liabilityChildType,
+            amount: (self.liabilityAmount * 100).toFixed(0)
+          }
+          self.debug('data:' + JSON.stringify(data))
+          addLiability(data).then(resp => {
+            if (resp.code === '0001') {
+              self.loadAssetInfo()
+              layer.close(index)
+            }
+          })
+        }
+      })
+      this.debug('渲染laydate')
+      var layuiLaydate = require('layui-laydate')
 
+      layuiLaydate.render({
+        elem: '#repaymentDay',
+        done: function (value, date, endDate) {
+          self.repaymentDay = value
         }
       })
     },
@@ -252,15 +279,35 @@ export default {
           this.cleanAsset = assetManageDTO.cleanAsset
           this.totalLiability = assetManageDTO.totalLiability
           this.assetModels = assetManageDTO.assetModels
-          this.assetModels.splice(3)
           this.liabilityModels = assetManageDTO.liabilityModels
           this.monthLiabilityModels = assetManageDTO.monthLiabilityModels
         }
       })
     }
   },
+  watch: {
+    liabilityParent: function () {
+      this.liabilityChildType = ''
+      getChildByParent({ id: this.liabilityParent }).then(resp => {
+        if (resp.code === '0001') {
+          this.liabilityChildList = resp.assetTypes
+        }
+      })
+    }
+  },
   created () {
     this.loadAssetInfo()
+    getLiabilityParents().then(resp => {
+      if (resp.code === '0001') {
+        this.liabilityParentList = resp.assetTypes
+      }
+    }).then(() => {
+      getAssetParents().then(resp => {
+        if (resp.code === '0001') {
+          this.assetParentList = resp.assetTypes
+        }
+      })
+    })
   }
 }
 </script>

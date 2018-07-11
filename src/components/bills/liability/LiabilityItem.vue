@@ -2,7 +2,7 @@
   <div class="layui-colla-item" @click="toggleShow">
     <div class="layui-colla-title">
         <h4>
-            <span>{{liabilityModel.name}}</span>&nbsp;
+            <span>{{liabilityModel.type}}</span>&nbsp;
             <span>￥{{liabilityModel.total|longToString}}</span>
         </h4>
     </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="layui-colla-item">
     <div class="layui-colla-title">
-        <h4 @click="toggleShow"><span>{{assetModel.name}}</span> <span>￥{{total}}</span></h4>
+        <h4 @click="toggleShow"><span>{{assetModel.type}}</span> <span>￥{{total}}</span></h4>
     </div>
     <transition name="fade">
       <div class="layui-colla-content layui-show" v-if="show">
