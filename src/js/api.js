@@ -20,6 +20,11 @@ export function login (data) {
   return sendAjax('/bootDemo/user/login', data)
 }
 
+export function register (data) {
+  data.password = getRsaCipher(data.password, rsaPubKey)
+  return sendAjax('/bootDemo/user/register/put', data)
+}
+
 export function logout () {
   return sendAjax('/bootDemo/user/logout', {})
 }

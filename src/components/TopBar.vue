@@ -23,6 +23,10 @@
           <dd><a href="javascript:void(0);">账单</a></dd>
           <dd><a href="javascript:void(0);">资产列表</a></dd>
           <dd><a href="javascript:void(0);">支付宝账单上传</a></dd>
+          <dd>
+            <a v-if="logined" href="javascript:void(0);" @click="logout">退出登录</a>
+            <a v-else href="javascript:void(0);" @click="goLogin">登录</a>
+          </dd>
         </dl>
       </li>
     </ul>
@@ -30,12 +34,16 @@
 </template>
 
 <script>
+import { logout } from '@/js/api'
 export default {
   name: 'TopBar',
   data () {
     return {
       mouseOvered: false,
-      itemMouseOvered: 0
+      itemMouseOvered: 0,
+      get logined () {
+        return window.localStorage.getItem('logined') === 'true'
+      }
     }
   },
   computed: {
@@ -73,6 +81,18 @@ export default {
           self.mouseOvered = false
         }
       }, 200)
+    },
+    logout: function () {
+      if (confirm('确定退出登录吗?')) {
+        logout().then(resp => {
+          if (resp.code === '0001') {
+            window.localStorage.removeItem('logined')
+          }
+        })
+      }
+    },
+    goLogin: function () {
+      this.$router.push('/login')
     }
   }
 }
