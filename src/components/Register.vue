@@ -118,11 +118,10 @@ export default {
   color: red;
   font-size: 0.25rem;
   display: block;
-  padding: 9px 15px;
-  width: 80px;
+  width: 100%;
   font-weight: 400;
   line-height: 20px;
-  text-align: left;
+  text-align: center;
 }
 .login-container {
   margin: 60px auto 0;
