@@ -10,10 +10,7 @@ import { debug } from '@/js/LogUtil'
 
 // 允许跨域携带cookie
 axios.defaults.withCredentials = true
-// { requestAssetManage, updateAsset, updateLiability,
-//   getLiabilityParents, getAssetParents, getChildByParent,
-//   addLiability
-// }
+
 const API = {
   requestAssetManage: () => {
     return sendAjax('/bootDemo/asset/manage', {})
@@ -52,6 +49,10 @@ const API = {
         return Promise.resolve(response.data)
       })
       .catch(errorLog)
+  },
+  register: (data) => {
+    data.password = getRsaCipher(data.password, rsaPubKey)
+    return sendAjax('/bootDemo/user/register/put', data)
   }
 }
 
