@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { login, logout, checkLoginStatus } from '@/js/api'
+import API from '@/js/api'
 export default {
   name: 'Login',
   data () {
@@ -64,7 +64,7 @@ export default {
       let data = {}
       data.userName = this.userName
       data.password = this.password
-      login(data).then((resp) => {
+      API.login(data).then((resp) => {
         if (resp.code === '0001') {
           this.debug('登录成功')
           this.loginError = false
@@ -76,14 +76,14 @@ export default {
       })
     },
     logout: function () {
-      logout().then((resp) => {
+      API.logout().then((resp) => {
         this.debug('退出成功')
         this.logined = false
       })
     }
   },
   created () {
-    checkLoginStatus().then((resp) => {
+    API.checkLoginStatus().then((resp) => {
       if (resp.code === '0001') {
         this.logined = true
       } else {

@@ -14,7 +14,7 @@ import Login from '@/components/Login'
 import Register from '@/components/Register'
 import AssetTypes from '@/components/AssetTypes'
 
-import { checkLoginStatus } from '@/js/api.js'
+import API from '@/js/api.js'
 import { needLogin } from '@/js/config.js'
 
 Vue.use(Router)
@@ -94,7 +94,7 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next()
     } else {
-      checkLoginStatus().then((resp) => {
+      API.checkLoginStatus().then((resp) => {
         if (!resp || resp.code !== '0001') {
           next('/login')
         } else {

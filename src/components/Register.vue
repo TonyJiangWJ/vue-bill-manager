@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { checkLoginStatus } from '@/js/api'
+import API from '@/js/api'
 export default {
   name: 'Login',
   data () {
@@ -55,7 +55,7 @@ export default {
     }
   },
   created () {
-    checkLoginStatus().then((resp) => {
+    API.checkLoginStatus().then((resp) => {
       if (resp.code === '0001') {
         this.$router.push('/login')
       }

@@ -10,55 +10,52 @@ import { debug } from '@/js/LogUtil'
 
 // 允许跨域携带cookie
 axios.defaults.withCredentials = true
-
-export function requestAssetManage () {
-  return sendAjax('/bootDemo/asset/manage', {})
+// { requestAssetManage, updateAsset, updateLiability,
+//   getLiabilityParents, getAssetParents, getChildByParent,
+//   addLiability
+// }
+const API = {
+  requestAssetManage: () => {
+    return sendAjax('/bootDemo/asset/manage', {})
+  },
+  updateAsset: (data) => {
+    return sendAjax('/bootDemo/asset/update', data)
+  },
+  updateLiability: (data) => {
+    return sendAjax('/bootDemo/liability/update', data)
+  },
+  getLiabilityParents: () => {
+    return sendAjax('/bootDemo/list/asset/parent/types/L')
+  },
+  getAssetParents: () => {
+    return sendAjax('/bootDemo/list/asset/parent/types/A')
+  },
+  addAssetType: (data) => {
+    return sendAjax('/bootDemo/asset/types/put', data)
+  },
+  getChildByParent: (data) => {
+    return sendAjax('/bootDemo/list/asset/type/by/parent/id', data)
+  },
+  addLiability: (data) => {
+    return sendAjax('/bootDemo/liability/put', data)
+  },
+  login: (data) => {
+    data.password = getRsaCipher(data.password, rsaPubKey)
+    return sendAjax('/bootDemo/user/login', data)
+  },
+  logout: () => {
+    return sendAjax('/bootDemo/user/logout', {})
+  },
+  checkLoginStatus: () => {
+    return axios.post(`${host}/bootDemo/login/status`)
+      .then((response) => {
+        return Promise.resolve(response.data)
+      })
+      .catch(errorLog)
+  }
 }
 
-export function login (data) {
-  data.password = getRsaCipher(data.password, rsaPubKey)
-  return sendAjax('/bootDemo/user/login', data)
-}
-
-export function logout () {
-  return sendAjax('/bootDemo/user/logout', {})
-}
-
-export function checkLoginStatus () {
-  return axios.post(`${host}/bootDemo/login/status`)
-    .then((response) => {
-      return Promise.resolve(response.data)
-    })
-    .catch(errorLog)
-}
-
-export function updateAsset (data) {
-  return sendAjax('/bootDemo/asset/update', data)
-}
-
-export function updateLiability (data) {
-  return sendAjax('/bootDemo/liability/update', data)
-}
-
-export function getLiabilityParents () {
-  return sendAjax('/bootDemo/list/asset/parent/types/L')
-}
-
-export function getAssetParents () {
-  return sendAjax('/bootDemo/list/asset/parent/types/A')
-}
-
-export function addAssetType (data) {
-  return sendAjax('/bootDemo/asset/types/put', data)
-}
-
-export function getChildByParent (data) {
-  return sendAjax('/bootDemo/list/asset/type/by/parent/id', data)
-}
-
-export function addLiability (data) {
-  return sendAjax('/bootDemo/liability/put', data)
-}
+export default API
 
 /**
  * rsa加密

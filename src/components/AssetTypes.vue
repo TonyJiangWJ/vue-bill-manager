@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { getLiabilityParents, getAssetParents, addAssetType, getChildByParent } from '@/js/api'
+import API from '@/js/api'
 export default {
   name: 'AssetTypes',
   data () {
@@ -91,7 +91,7 @@ export default {
         parentCode: this.parentCode
       }
       console.log(JSON.stringify(data))
-      addAssetType(data).then(resp => {
+      API.addAssetType(data).then(resp => {
         if (resp.code === '0001') {
           alert('添加成功')
           this.loadParents()
@@ -101,12 +101,12 @@ export default {
       })
     },
     loadParents: function () {
-      getLiabilityParents().then(resp => {
+      API.getLiabilityParents().then(resp => {
         if (resp.code === '0001') {
           this.liabilityParentList = resp.assetTypes
         }
       }).then(() => {
-        getAssetParents().then(resp => {
+        API.getAssetParents().then(resp => {
           if (resp.code === '0001') {
             this.assetParentList = resp.assetTypes
           }
@@ -123,7 +123,7 @@ export default {
       let data = {
         id: typeId
       }
-      getChildByParent(data).then(resp => {
+      API.getChildByParent(data).then(resp => {
         if (resp.code === '0001') {
           this.childTypeList = resp.assetTypes
         }

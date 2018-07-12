@@ -137,10 +137,11 @@ import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
 import '@/assets/css/modules/laydate/default/laydate.css'
-import { requestAssetManage, updateAsset, updateLiability,
-  getLiabilityParents, getAssetParents, getChildByParent,
-  addLiability
-} from '@/js/api.js'
+// { requestAssetManage, updateAsset, updateLiability,
+//   getLiabilityParents, getAssetParents, getChildByParent,
+//   addLiability
+// }
+import API from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
@@ -198,7 +199,7 @@ export default {
             amount: (self.assetAmount * 100).toFixed(0)
           }
           self.debug('data:' + JSON.stringify(data))
-          updateAsset(data).then((resp) => {
+          API.updateAsset(data).then((resp) => {
             if (resp.code === '0001') {
               layer.close(index)
               self.loadAssetInfo()
@@ -226,7 +227,7 @@ export default {
             amount: (self.liabilityAmount * 100).toFixed(0),
             paid: (self.liabilityPaid * 100).toFixed(0)
           }
-          updateLiability(data).then((resp) => {
+          API.updateLiability(data).then((resp) => {
             if (resp.code === '0001') {
               layer.close(index)
               self.loadAssetInfo()
@@ -253,7 +254,7 @@ export default {
             amount: (self.liabilityAmount * 100).toFixed(0)
           }
           self.debug('data:' + JSON.stringify(data))
-          addLiability(data).then(resp => {
+          API.addLiability(data).then(resp => {
             if (resp.code === '0001') {
               self.loadAssetInfo()
               layer.close(index)
@@ -272,7 +273,7 @@ export default {
       })
     },
     loadAssetInfo: function () {
-      requestAssetManage().then((resp) => {
+      API.requestAssetManage().then((resp) => {
         if (resp && resp.code === '0001') {
           let assetManageDTO = resp.assetManage
           this.totalAsset = assetManageDTO.totalAsset
@@ -288,7 +289,7 @@ export default {
   watch: {
     liabilityParent: function () {
       this.liabilityChildType = ''
-      getChildByParent({ id: this.liabilityParent }).then(resp => {
+      API.getChildByParent({ id: this.liabilityParent }).then(resp => {
         if (resp.code === '0001') {
           this.liabilityChildList = resp.assetTypes
         }
@@ -297,12 +298,12 @@ export default {
   },
   created () {
     this.loadAssetInfo()
-    getLiabilityParents().then(resp => {
+    API.getLiabilityParents().then(resp => {
       if (resp.code === '0001') {
         this.liabilityParentList = resp.assetTypes
       }
     }).then(() => {
-      getAssetParents().then(resp => {
+      API.getAssetParents().then(resp => {
         if (resp.code === '0001') {
           this.assetParentList = resp.assetTypes
         }
