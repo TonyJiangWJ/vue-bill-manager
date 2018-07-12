@@ -69,7 +69,7 @@ export default {
         }
         this.debug('request:' + JSON.stringify(data))
         API.register(data).then(resp => {
-          if (resp.code === '0001') {
+          if (resp.code === API.CODE_CONST.SUCCESS) {
             alert('注册成功，前往登录')
             this.$router.push('/login')
           } else {
@@ -96,7 +96,7 @@ export default {
   },
   created () {
     API.checkLoginStatus().then((resp) => {
-      if (resp.code === '0001') {
+      if (resp.code === API.CODE_CONST.SUCCESS) {
         this.$router.push('/login')
       }
     })

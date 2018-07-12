@@ -95,7 +95,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       API.checkLoginStatus().then((resp) => {
-        if (!resp || resp.code !== '0001') {
+        if (!resp || resp.code !== API.CODE_CONST.SUCCESS) {
           next('/login')
         } else {
           next()

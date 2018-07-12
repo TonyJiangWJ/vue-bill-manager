@@ -1,5 +1,31 @@
 <template>
   <div>
+    <div style="display: none;" id="addAssetLayerContent">
+      <div class="layui-form" style="margin: 20px 20px 20px 0;">
+        <div class="layui-form-item">
+          <label class="layui-form-label">父类别</label>
+          <div class="layui-input-inline select-parent">
+              <Select v-model="addAssetParentType">
+                <Option v-for="parentType in assetParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
+              </Select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">子类别</label>
+          <div class="layui-input-inline">
+              <Select v-model="addAssetChildType">
+                <Option v-for="childType in assetChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
+              </Select>
+          </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">金额</label>
+            <div class="layui-input-inline">
+                <input class="layui-input" v-model="addAssetAmount" type="text" placeholder="金额"/>
+            </div>
+        </div>
+      </div>
+    </div>
     <div style="display: none;" id="assetLayerContent">
         <div class="layui-form" style="margin: 20px 20px 20px 0;">
             <input v-model="assetId" type="hidden"/>
@@ -65,7 +91,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label">首期还款日:{{repaymentDay}}</label>
+                <label class="layui-form-label">首期还款日</label>
                 <div class="layui-input-inline">
                     <input id="repaymentDay" v-model="repaymentDay" type="text" class="layui-input" placeholder="首期还款日"/>
                 </div>
@@ -86,6 +112,7 @@
             <h2>
                 <span style="margin-left: 5px;">总资产</span>
                 <span style="color: green;">{{totalAsset|longToString}}</span>
+                <button class="layui-btn layui-btn-xs layui-btn-normal" @click="addAsset">添加资产</button>
             </h2>
         </div>
         <div style="margin: 5px;">
@@ -150,6 +177,9 @@ export default {
       assetType: '',
       assetName: '',
       assetAmount: '',
+      addAssetParentType: '',
+      addAssetChildType: '',
+      addAssetAmount: '',
       liabilityType: '',
       liabilityAmount: '',
       liabilityPaid: '',
@@ -200,7 +230,7 @@ export default {
           }
           self.debug('data:' + JSON.stringify(data))
           API.updateAsset(data).then((resp) => {
-            if (resp.code === '0001') {
+            if (resp.code === API.CODE_CONST.SUCCESS) {
               layer.close(index)
               self.loadAssetInfo()
             } else {
@@ -228,11 +258,37 @@ export default {
             paid: (self.liabilityPaid * 100).toFixed(0)
           }
           API.updateLiability(data).then((resp) => {
-            if (resp.code === '0001') {
+            if (resp.code === API.CODE_CONST.SUCCESS) {
               layer.close(index)
               self.loadAssetInfo()
             } else {
               layer.alert('修改失败，请重试！')
+            }
+          })
+        }
+      })
+    },
+    addAsset: function () {
+      var layer = require('layui-layer')
+      let self = this
+      layer.open({
+        type: 1,
+        title: '添加资产信息',
+        content: $('#addAssetLayerContent'),
+        btn: ['确定', '关闭'],
+        yes: function (index) {
+          let data = {
+            amount: (self.addAssetAmount * 100).toFixed(0),
+            type: self.addAssetChildType ? self.addAssetChildType : self.addAssetParentType,
+            name: self.addAssetName
+          }
+          API.addAsset(data).then(resp => {
+            if (resp.code === API.CODE_CONST.SUCCESS) {
+              alert('添加成功')
+              layer.close(index)
+              self.loadAssetInfo()
+            } else {
+              alert('添加失败')
             }
           })
         }
@@ -255,7 +311,7 @@ export default {
           }
           self.debug('data:' + JSON.stringify(data))
           API.addLiability(data).then(resp => {
-            if (resp.code === '0001') {
+            if (resp.code === API.CODE_CONST.SUCCESS) {
               self.loadAssetInfo()
               layer.close(index)
             }
@@ -274,7 +330,7 @@ export default {
     },
     loadAssetInfo: function () {
       API.requestAssetManage().then((resp) => {
-        if (resp && resp.code === '0001') {
+        if (resp && resp.code === API.CODE_CONST.SUCCESS) {
           let assetManageDTO = resp.assetManage
           this.totalAsset = assetManageDTO.totalAsset
           this.cleanAsset = assetManageDTO.cleanAsset
@@ -290,8 +346,16 @@ export default {
     liabilityParent: function () {
       this.liabilityChildType = ''
       API.getChildByParent({ id: this.liabilityParent }).then(resp => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.liabilityChildList = resp.assetTypes
+        }
+      })
+    },
+    addAssetParentType: function () {
+      this.addAssetChildType = ''
+      API.getChildByParent({ id: this.addAssetParentType }).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.assetChildList = resp.assetTypes
         }
       })
     }
@@ -299,12 +363,12 @@ export default {
   created () {
     this.loadAssetInfo()
     API.getLiabilityParents().then(resp => {
-      if (resp.code === '0001') {
+      if (resp.code === API.CODE_CONST.SUCCESS) {
         this.liabilityParentList = resp.assetTypes
       }
     }).then(() => {
       API.getAssetParents().then(resp => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.assetParentList = resp.assetTypes
         }
       })

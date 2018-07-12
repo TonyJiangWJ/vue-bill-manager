@@ -72,7 +72,7 @@ export default {
       data.userName = this.userName
       data.password = this.password
       API.login(data).then((resp) => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('登录成功')
           this.loginError = false
           window.localStorage.setItem('logined', 'true')
@@ -85,7 +85,7 @@ export default {
     },
     logout: function () {
       API.logout().then((resp) => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('退出成功')
           window.localStorage.removeItem('logined')
           this.logined = false
@@ -114,7 +114,7 @@ export default {
   },
   created () {
     API.checkLoginStatus().then((resp) => {
-      if (resp.code === '0001') {
+      if (resp.code === API.CODE_CONST.SUCCESS) {
         this.logined = true
       } else {
         window.localStorage.removeItem('logined')

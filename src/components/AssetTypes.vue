@@ -92,7 +92,7 @@ export default {
       }
       console.log(JSON.stringify(data))
       API.addAssetType(data).then(resp => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           alert('添加成功')
           this.loadParents()
         } else {
@@ -102,12 +102,12 @@ export default {
     },
     loadParents: function () {
       API.getLiabilityParents().then(resp => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.liabilityParentList = resp.assetTypes
         }
       }).then(() => {
         API.getAssetParents().then(resp => {
-          if (resp.code === '0001') {
+          if (resp.code === API.CODE_CONST.SUCCESS) {
             this.assetParentList = resp.assetTypes
           }
         })
@@ -124,7 +124,7 @@ export default {
         id: typeId
       }
       API.getChildByParent(data).then(resp => {
-        if (resp.code === '0001') {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
           this.childTypeList = resp.assetTypes
         }
       })

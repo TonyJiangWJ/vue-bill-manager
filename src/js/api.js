@@ -18,6 +18,9 @@ const API = {
   updateAsset: (data) => {
     return sendAjax('/bootDemo/asset/update', data)
   },
+  addAsset: (data) => {
+    return sendAjax('/bootDemo/asset/put', data)
+  },
   updateLiability: (data) => {
     return sendAjax('/bootDemo/liability/update', data)
   },
@@ -53,6 +56,14 @@ const API = {
   register: (data) => {
     data.password = getRsaCipher(data.password, rsaPubKey)
     return sendAjax('/bootDemo/user/register/put', data)
+  },
+  CODE_CONST: {
+    SUCCESS: '0001',
+    PARAM_ERROR: '0002',
+    SYS_ERROR: '0003',
+    DATA_NOT_EXIST: '0004',
+    OPERATE_ERROR: '0005',
+    NOT_LOGIN: '0006'
   }
 }
 
@@ -82,7 +93,7 @@ function sendAjax (url, data) {
   iView.LoadingBar.start()
   return axios.post(`${host}${url}`, qs.stringify(data))
     .then((response) => {
-      if (response.data.code === '0006') {
+      if (response.data.code === API.CODE_CONST.NOT_LOGIN) {
         debug('未登录')
         iView.LoadingBar.finish()
         window.location.href = '#/login'

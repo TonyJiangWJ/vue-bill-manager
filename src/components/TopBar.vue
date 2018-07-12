@@ -85,7 +85,7 @@ export default {
     logout: function () {
       if (confirm('确定退出登录吗?')) {
         API.logout().then(resp => {
-          if (resp.code === '0001') {
+          if (resp.code === API.CODE_CONST.SUCCESS) {
             window.localStorage.removeItem('logined')
           }
         })
