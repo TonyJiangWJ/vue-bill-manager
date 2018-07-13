@@ -59,10 +59,10 @@ export default {
           var param = paramsList[i]
           sql = sql.replace(/\?/, '\'' + param + '\'').replace(/limit.*'(\d+)',.*'(\d+)'/, 'limit $1, $2').replace(/>$/, '')
         }
-        console.log(sql)
+        this.debug(sql)
         this.sqlResultStr = sql
       } catch (e) {
-        console.log(e)
+        this.debug(e)
         this.sqlResultStr = '请确认复制的内容包含完整的Preparing和Parameters信息'
       }
     }

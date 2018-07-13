@@ -81,6 +81,17 @@
         </a>
       </li>
     </ul>
+    <h2>Powered By</h2>
+    <ul>
+      <li>
+        <a
+          href="http://www.layui.com"
+          target="_blank"
+        >
+          layui-css
+        </a>
+      </li>
+    </ul>
   </div>
 </template>
 
