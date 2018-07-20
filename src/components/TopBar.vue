@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <ul class="layui-nav">
+    <ul class="layui-nav my_nav">
       <li class="layui-nav-item" :class="selected=='index'?'layui-this':''">
         <a href="#/">首页</a>
       </li>
@@ -19,7 +19,7 @@
       </li>
       <li class="layui-nav-item" :class="selected=='bill'?'layui-this':''">
         <a href="#/bills">Bill<span class="layui-nav-more" :class="mouseOvered?'layui-nav-mored':''" @mouseover="hoverBillMenu" @mouseout="leaveBillMenu"></span></a>
-        <dl class="layui-nav-child layui-anim layui-anim-upbit" :class="mouseOvered?'layui-show':''" @mouseover="hoverBillMenuItem" @mouseout="leaveBillMenuItem">
+        <dl class="layui-nav-child my_nav_child layui-anim layui-anim-upbit" :class="mouseOvered?'layui-show':''" @mouseover="hoverBillMenuItem" @mouseout="leaveBillMenuItem">
           <dd><a href="javascript:void(0);">账单</a></dd>
           <dd><a href="javascript:void(0);">资产列表</a></dd>
           <dd><a href="javascript:void(0);">支付宝账单上传</a></dd>
@@ -99,11 +99,11 @@ export default {
 </script>
 
 <style>
-.layui-nav-child {
+.my_nav_child {
   right: 0;
   left: auto;
 }
-.header .layui-nav {
+.header .my_nav {
   padding-right: 5px;
 }
 </style>

@@ -19,6 +19,12 @@
           </div>
         </div>
         <div class="layui-form-item">
+          <label class="layui-form-label">自定义名称</label>
+          <div class="layui-input-inline">
+              <input class="layui-input" v-model="addAssetExtName" type="text" placeholder="自定义名称"/>
+          </div>
+        </div>
+        <div class="layui-form-item">
             <label class="layui-form-label">金额</label>
             <div class="layui-input-inline">
                 <input class="layui-input" v-model="addAssetAmount" type="text" placeholder="金额"/>
@@ -30,7 +36,7 @@
         <div class="layui-form" style="margin: 20px 20px 20px 0;">
             <input v-model="assetId" type="hidden"/>
             <div class="layui-form-item">
-                <label class="layui-form-label">类别</label>
+                <label class="layui-form-label">名称</label>
                 <div class="layui-input-inline">
                     <input class="layui-input" v-model="assetName" type="text" readonly="readonly"/>
                 </div>
@@ -164,10 +170,6 @@ import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
 import '@/assets/css/modules/laydate/default/laydate.css'
-// { requestAssetManage, updateAsset, updateLiability,
-//   getLiabilityParents, getAssetParents, getChildByParent,
-//   addLiability
-// }
 import API from '@/js/api.js'
 export default {
   name: 'Assets',
@@ -180,6 +182,7 @@ export default {
       addAssetParentType: '',
       addAssetChildType: '',
       addAssetAmount: '',
+      addAssetExtName: '',
       liabilityType: '',
       liabilityAmount: '',
       liabilityPaid: '',
@@ -226,7 +229,8 @@ export default {
         yes: function (index) {
           let data = {
             id: self.assetId,
-            amount: (self.assetAmount * 100).toFixed(0)
+            amount: (self.assetAmount * 100).toFixed(0),
+            name: self.assetName
           }
           self.debug('data:' + JSON.stringify(data))
           API.updateAsset(data).then((resp) => {
@@ -280,7 +284,7 @@ export default {
           let data = {
             amount: (self.addAssetAmount * 100).toFixed(0),
             type: self.addAssetChildType ? self.addAssetChildType : self.addAssetParentType,
-            name: self.addAssetName
+            name: self.addAssetExtName
           }
           API.addAsset(data).then(resp => {
             if (resp.code === API.CODE_CONST.SUCCESS) {
