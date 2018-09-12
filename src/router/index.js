@@ -13,6 +13,7 @@ import Assets from '@/components/bills/Assets'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
 import AssetTypes from '@/components/AssetTypes'
+import TaxCal from '@/components/tools/TaxCal'
 
 import API from '@/js/api.js'
 import { needLogin } from '@/js/config.js'
@@ -53,6 +54,11 @@ const router = new Router({
         path: '/tools/t2test',
         name: 'T2Test',
         component: T2Test
+      },
+      {
+        path: '/tools/taxCal',
+        name: 'TaxCal',
+        component: TaxCal
       }]
     },
     {
