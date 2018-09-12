@@ -218,118 +218,15 @@ export default {
       this.assetId = payload.assetId
       this.assetName = payload.assetName
       this.assetAmount = payload.assetAmount
-      var layer = require('layui-layer')
-      var self = this
-      layer.open({
-        type: 1,
-        title: '修改资产信息',
-        content: $('#assetLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            id: self.assetId,
-            amount: (self.assetAmount * 100).toFixed(0),
-            name: self.assetName
-          }
-          self.debug('data:' + JSON.stringify(data))
-          API.updateAsset(data).then((resp) => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              layer.alert('修改失败，请重试！')
-            }
-          })
-        }
-      })
     },
     handleTimeLineClick: function (payload) {
       this.liabilityType = payload.type
       this.liabilityAmount = (payload.amount / 100).toFixed(2)
       this.liabilityPaid = payload.paid
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '分期信息',
-        content: $('#liabilityLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            id: payload.id,
-            amount: (self.liabilityAmount * 100).toFixed(0),
-            paid: (self.liabilityPaid * 100).toFixed(0)
-          }
-          API.updateLiability(data).then((resp) => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              layer.alert('修改失败，请重试！')
-            }
-          })
-        }
-      })
     },
     addAsset: function () {
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '添加资产信息',
-        content: $('#addAssetLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            amount: (self.addAssetAmount * 100).toFixed(0),
-            type: self.addAssetChildType ? self.addAssetChildType : self.addAssetParentType,
-            name: self.addAssetExtName
-          }
-          API.addAsset(data).then(resp => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              alert('添加成功')
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              alert('添加失败')
-            }
-          })
-        }
-      })
     },
     addLiability: function () {
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '添加分期账单',
-        content: $('#addLiabilityLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            repaymentDay: self.repaymentDay,
-            installment: self.installment,
-            type: self.liabilityChildType,
-            amount: (self.liabilityAmount * 100).toFixed(0)
-          }
-          self.debug('data:' + JSON.stringify(data))
-          API.addLiability(data).then(resp => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              self.loadAssetInfo()
-              layer.close(index)
-            }
-          })
-        }
-      })
-      this.debug('渲染laydate')
-      var layuiLaydate = require('layui-laydate')
-
-      layuiLaydate.render({
-        elem: '#repaymentDay',
-        done: function (value, date, endDate) {
-          self.repaymentDay = value
-        }
-      })
     },
     loadAssetInfo: function () {
       API.requestAssetManage().then((resp) => {

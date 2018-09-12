@@ -1,9 +1,43 @@
 <template>
   <div>
-    <div id="common_tools" class="layui-row layui-col-space5">
-      <div class="layui-col-md2"></div>
-      <div class="layui-col-md8">
-          <table class="t-table">
+    <Row type="flex" justify="center" align="top">
+      <Col span="3"></Col>
+      <Col span="18">
+        <Row>
+          <Col span="8"><h3>工具名称</h3></Col>
+          <Col span="8"><h4>当前时间:</h4></Col>
+          <Col span="8"><span @dblclick="copyNowDateTime">{{nowDateTime}}</span></Col>
+        </Row>
+        <Row>
+          <Col span="8">时间转换</Col>
+          <Col span="8"><Input v-model="timestamp13" placeholder="timestamp13" type="number"/></Col>
+          <Col span="8"><Button type="primary" @click="ttString">转换字符串</Button></Col>
+        </Row>
+        <Row>
+          <Col span="8"></Col>
+          <Col span="8" offset="8"><Input type="text" v-model="timeString" placeholder="时间字符串"/></Col>
+          <Col span="8"><Button type="primary" @click="ttStamp">转换时间戳</Button></Col>
+        </Row>
+        <Row>
+          <Col span="8">urlEncode转换</Col>
+          <Col span="8"><Input v-model="simpleStr" placeholder="普通字符串" type="text"/></Col>
+          <Col span="8"><Button type="primary" @click="doEncode">转换字符串</Button></Col>
+        </Row>
+        <Row>
+          <Col span="8"></Col>
+          <Col span="8" offset="8"><Input type="text" v-model="encodeStr" placeholder="URLEncoded"/></Col>
+          <Col span="8"><Button type="primary" @click="doDecode">解码字符串</Button></Col>
+        </Row>
+        <Row>
+          <Col span="8">Unicode转换</Col>
+          <Col span="4"><Input type="textarea" rows="4" placeholder="unicode" v-model="unicodeStr"/></Col>
+          <Col span="4"><Input type="textarea" rows="4" placeholder="converted" v-model="convertedStr"/></Col>
+          <Col span="8">
+            <Button type="primary" @click="convert">解码</Button>
+            <Button type="primary" @click="backUnicode">编码</Button>
+          </Col>
+        </Row>
+          <table style="width:100%">
               <thead>
               <tr>
                   <td><h3>工具名称</h3></td>
@@ -22,9 +56,9 @@
               <tr>
                   <td><span>时间转换</span></td>
                   <td>Timestamp13:</td>
-                  <td><input class="layui-input" type="number" v-model="timestamp13"></td>
+                  <td><Input v-model="timestamp13" placeholder="timestamp13" type="number"/></td>
                   <td>
-                      <button class="layui-btn" @click="ttString">转换字符串</button>
+                      <Button type="primary" @click="ttString">转换字符串</Button>
                   </td>
               </tr>
               <tr>
@@ -162,9 +196,9 @@
               </tr>
               </tbody>
           </table>
-      </div>
-    </div>
-    <div class="layui-col-md2"></div>
+      </Col>
+      <Col span="3"/>
+    </Row>
   </div>
 </template>
 
@@ -316,30 +350,16 @@ export default {
       setInterval(function () {
         self.nowDateTime = self.dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
       }, 1000)
-    },
-    renderLayDate: function () {
-      this.debug('渲染laydate')
-      this.dateFormat(new Date(), 'yyyy-MM-dd HH:mm:ss')
-      var layuiLaydate = require('layui-laydate')
-      var self = this
-      layuiLaydate.render({
-        elem: '#startDate',
-        done: function (value, date, endDate) {
-          self.startDate = value
-        }
-      })
-
-      layuiLaydate.render({
-        elem: '#endDate',
-        done: function (value, date, endDate) {
-          self.endDate = value
-        }
-      })
     }
   },
   mounted () {
     this.intervalRefresh()
-    this.renderLayDate()
   }
 }
 </script>
+
+<style scoped>
+.ivu-row {
+  margin: 5px 0;
+}
+</style>
