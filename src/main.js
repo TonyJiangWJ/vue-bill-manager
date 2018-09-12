@@ -9,8 +9,6 @@ import DateUtil from '@/js/DateUtil'
 import LogUtil from '@/js/LogUtil'
 
 import 'iview/dist/styles/iview.css'
-import './assets/css/layui.css'
-import './assets/css/global.css'
 
 iView.LoadingBar.config({
   color: '#00fdff'

@@ -184,7 +184,6 @@ export default {
   methods: {
     calculate: function () {},
     calExpress: function () {
-      this.result = eval(this.express)
     }
   }
 }

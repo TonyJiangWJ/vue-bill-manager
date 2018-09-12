@@ -169,7 +169,6 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import '@/assets/css/modules/laydate/default/laydate.css'
 import API from '@/js/api.js'
 export default {
   name: 'Assets',

@@ -172,7 +172,6 @@
 import { Base64 } from 'js-base64'
 import { md5 } from 'md5js'
 import JSEncrypt from 'JSEncrypt'
-import '@/assets/css/modules/laydate/default/laydate.css'
 
 export default {
   name: 'CommonTools',
