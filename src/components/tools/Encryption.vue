@@ -1,43 +1,81 @@
 <template>
-  <div class="layui-row layui-col-space5">
-    <div class="layui-col-md2"></div>
-    <div class="contain layui-col-md8">
-        <div>
-            <label>密文：</label>
-            <button class="clip-btn layui-btn layui-btn-xs layui-btn-primary" :data-clipboard-text="encryptedStr">点我复制
-            </button>
-            <textarea placeholder="密文" style="height: 5rem" v-model="encryptedStr"></textarea>
-        </div>
-        <div>
-            <label>明文：</label>
-            <textarea placeholder="明文" style="height: 3rem"
-                      v-model="decryptedStr"
-            ></textarea>
-        </div>
-        <div>
-            <button @click="encrypt" class="layui-btn layui-btn-xs">加密</button>
-            <button @click="decrypt" class="layui-btn layui-btn-xs">解密</button>
-        </div>
-        <div>
-            <label>对方的公钥：</label>
-            <textarea placeholder="对方的公钥" style="height: 5rem" v-model="targetPubKey"></textarea>
-        </div>
-        <div>
-            <button @click="generateKeys" class="layui-btn layui-btn-xs layui-btn-danger">生成密钥对</button>
-        </div>
-        <div>
-            <label>我的公钥：</label>
-            <button class="clip-btn layui-btn layui-btn-xs layui-btn-primary" :data-clipboard-text="myPubKey">点我复制
-            </button>
-            <textarea placeholder="我的公钥" style="height: 5rem" readonly v-model="myPubKey"></textarea>
-        </div>
-        <div>
-            <label>我的私钥：</label>
-            <button class="layui-btn layui-btn-xs layui-btn-primary" style="float: left;margin-bottom: 2px" @click="togglePrivateKey">{{privateKeyStatus?'隐藏':'显示'}}</button>
-            <textarea placeholder="我的私钥" :style="'height: 8rem; '+(privateKeyStatus?'':'display:none')" readonly v-model="myPrivateKey"></textarea>
-        </div>
-    </div>
-    <div class="layui-col-md2"></div>
+<div>
+  <Row type="flex" justify="center" align="top">
+    <Col :xs="0" :sm="3"></Col>
+    <Col :xs="24" :sm="18">
+      <Row>
+        <Col><h2>基础RSA加密通信</h2></Col>
+      </Row>
+      <Divider orientation="left">
+        <Row style="width:80px;">
+          <Col span="12">密文</Col>
+          <Col span="12"><Button size="small" class="clip-btn" :data-clipboard-text="encryptedStr">copy</Button></Col>
+        </Row>
+      </Divider>
+      <Row>
+        <Col span="22" offset="1">
+          <Input type="textarea" :rows="4" v-model="encryptedStr" placeholder="密文"/>
+        </Col>
+      </Row>
+      <Divider orientation="left">
+        <Row style="width:80px;">
+          <Col span="12">明文</Col>
+          <Col span="12"><Button size="small" class="clip-btn" :data-clipboard-text="decryptedStr">copy</Button></Col>
+        </Row>
+      </Divider>
+      <Row>
+        <Col span="22" offset="1">
+          <Input type="textarea" :rows="4" v-model="decryptedStr" placeholder="明文"/>
+        </Col>
+      </Row>
+      <Row justify="center" type="flex">
+        <Col span="4">
+          <Button @click="encrypt" type="primary">加密</Button>
+        </Col>
+        <Col span="4">
+          <Button @click="decrypt" type="primary">解密</Button>
+        </Col>
+      </Row>
+      <Divider orientation="left">对方的公钥</Divider>
+      <Row>
+        <Col span="22" offset="1">
+          <Input type="textarea" :rows="4" placeholder="对方的公钥" v-model="targetPubKey"/>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center" align="top">
+        <Col>
+          <Button @click="generateKeys" type="warning">生成密钥对</Button>
+        </Col>
+      </Row>
+      <Divider orientation="left">
+        <Row style="width:120px">
+          <Col span="12">我的公钥</Col>
+          <Col span="12">
+            <Button class="clip-btn" size="small" :data-clipboard-text="myPubKey">copy</Button>
+          </Col>
+        </Row>
+      </Divider>
+      <Row>
+        <Col span="22" offset="1">
+          <Input type="textarea" placeholder="我的公钥" :rows="4" readonly v-model="myPubKey"></Input>
+        </Col>
+      </Row>
+      <Divider orientation="left">
+        <Row style="width:120px">
+          <Col span="12">我的私钥</Col>
+          <Col span="12">
+            <Button size="small" @click="togglePrivateKey">{{privateKeyStatus?'隐藏':'显示'}}</Button>
+          </Col>
+        </Row>
+      </Divider>
+      <Row>
+        <Col span="22" offset="1">
+          <Input type="textarea" placeholder="我的私钥" :rows="6" :style="(privateKeyStatus?'':'display:none')" readonly v-model="myPrivateKey"></Input>
+        </Col>
+      </Row>
+    </Col>
+    <Col :xs="0" :sm="3"></Col>
+  </Row>
 </div>
 </template>
 
@@ -140,7 +178,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .contain {
     text-align: center;
 }
@@ -157,10 +195,5 @@ export default {
 .contain > div > textarea {
     resize: none;
     width: 100%;
-}
-
-.clip-btn {
-    float: left;
-    margin: -2px 2px 2px 2px;
 }
 </style>

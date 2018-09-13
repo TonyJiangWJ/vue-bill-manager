@@ -1,6 +1,6 @@
 <template>
-  <Menu theme="light" mode="horizontal" active-name="home" @on-select="clickedHome">
-    <MenuItem name="home">
+  <Menu theme="light" mode="horizontal" :active-name="selected" @on-select="clickedHome">
+    <MenuItem name="index">
     <Icon type="ios-home" /> 首页
     </MenuItem>
     <MenuItem name="tools">
@@ -29,8 +29,6 @@ export default {
   name: 'TopBar',
   data () {
     return {
-      mouseOvered: false,
-      itemMouseOvered: 0,
       get logined () {
         return window.localStorage.getItem('logined') === 'true'
       }
@@ -49,7 +47,7 @@ export default {
   },
   methods: {
     clickedHome: function (name) {
-      if (name === 'home') {
+      if (name === 'index') {
         this.$router.push('/')
       } else if (name === 'tools') {
         this.$router.push('/tools')

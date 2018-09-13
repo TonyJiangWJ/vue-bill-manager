@@ -1,40 +1,32 @@
 <template>
   <div>
-    <div id="sqlLogConvert" class="layui-row layui-col-space5">
-    <div class="layui-col-md2"></div>
-    <div class="layui-col-md8">
-        <table class="t-table">
-            <thead>
-            <tr>
-                <td>
-                    <h2>iBatis/MyBatis日志分析工具（一次分析一条完整数据）</h2>
-                </td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <textarea class="t-textarea t-textarea-source" placeholder="source" v-model="sqlSourceStr"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <textarea class="t-textarea t-textarea-target" placeholder="target" v-model="sqlResultStr"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button style="float: left;margin: 2px;" class="layui-btn" @click="convertSql">转换日志</button>
-                    <button class="layui-btn clip-btn layui-btn-primary" :data-clipboard-text="sqlResultStr">点我复制结果
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-
-        </table>
-    </div>
-    <div class="layui-col-md2"></div>
-</div>
+    <Row type="flex" justify="center" align="top">
+      <Col :xs="0" :sm="3"></Col>
+      <Col :xs="24" :sm="18">
+        <Row>
+          <Col span="24"><h2>iBatis/MyBatis日志分析工具（一次分析一条完整数据）</h2></Col>
+        </Row>
+        <Row>
+          <Col span="22" offset="1">
+            <Input type="textarea" :rows="8" placeholder="source" v-model="sqlSourceStr"/>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="22" offset="1">
+            <Input type="textarea" :rows="12" placeholder="target" v-model="sqlResultStr"/>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="4" offset="1">
+            <Button type="primary" @click="convertSql">转换日志</Button>
+          </Col>
+          <Col span="4">
+            <Button class="clip-btn" :data-clipboard-text="sqlResultStr">点我复制结果</Button>
+          </Col>
+        </Row>
+      </Col>
+      <Col :xs="0" :sm="3"></Col>
+    </Row>
   </div>
 </template>
 
