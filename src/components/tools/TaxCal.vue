@@ -250,7 +250,9 @@ export default {
         endowmentScale: 0.08,
         medicalScale: 0.02,
         providentScale: 0.12,
-        newTaxPoint: 5000
+        newTaxPoint: 5000,
+        maxProvidnetFundPoint: 24311,
+        maxSocialInsurancePoint: 15274.74
       },
       checkBox: {
         customSocialPoint: false,
@@ -261,6 +263,7 @@ export default {
   },
   methods: {
     calculate: function () {
+      // this.checkMaxPoint()
       this.unemploymentInsurance = (this.socialInsurancePoint * this.config.unemployScale).toFixed(2)
       this.endowmentInsurance = (this.socialInsurancePoint * this.config.endowmentScale).toFixed(2)
       this.medicalInsurance = (this.socialInsurancePoint * this.config.medicalScale).toFixed(2)
@@ -275,8 +278,8 @@ export default {
       this.calTaxFee()
       this.calNewTaxFee()
 
-      this.inHandSalary = this.afterInsurance - this.taxFee
-      this.newInHandSalary = this.afterInsurance - this.newTaxFee
+      this.inHandSalary = (this.afterInsurance - this.taxFee).toFixed(2)
+      this.newInHandSalary = (this.afterInsurance - this.newTaxFee).toFixed(2)
       this.balanceBetweenNewOld = (this.newInHandSalary - this.inHandSalary).toFixed(2)
     },
     getPercent: function (subclass, total) {
@@ -311,6 +314,14 @@ export default {
         taxFee = this.getTaxFee(taxAmount, taxLadder.step7)
       }
       return taxFee.toFixed(2)
+    },
+    checkMaxPoint: function () {
+      if (this.socialInsurancePoint > this.config.maxSocialInsurancePoint) {
+        this.socialInsurancePoint = this.config.maxSocialInsurancePoint
+      }
+      if (this.providentFundPoint > this.config.maxProvidnetFundPoint) {
+        this.providentFundPoint = this.config.maxProvidnetFundPoint
+      }
     }
   },
   computed: {
@@ -357,12 +368,13 @@ export default {
   },
   watch: {
     beforeTax: function () {
-      if (!this.checkBox.customSocialPoint) {
-        this.socialInsurancePoint = this.beforeTax
-      }
       if (!this.checkBox.customProvidentPoint) {
         this.providentFundPoint = this.beforeTax
       }
+      if (!this.checkBox.customSocialPoint) {
+        this.socialInsurancePoint = this.beforeTax
+      }
+      this.checkMaxPoint()
     }
   }
 }
