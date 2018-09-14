@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tax-container">
     <Row type="flex" justify="center" align="middle">
       <Col :xs="0" :ms="3"></Col>
       <Col :xs="24" :ms="18">
@@ -381,6 +381,10 @@ export default {
 </script>
 
 <style scoped>
+.tax-container > div {
+  margin: 0.5rem 0;
+}
+
 @media screen and (min-width: 300px) {
   .main-container {
     width: 90%;
