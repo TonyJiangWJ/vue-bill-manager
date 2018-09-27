@@ -1,37 +1,41 @@
 <template>
   <div>
-    <div style="display: none;" id="addAssetLayerContent">
-      <div class="layui-form" style="margin: 20px 20px 20px 0;">
-        <div class="layui-form-item">
-          <label class="layui-form-label">父类别</label>
-          <div class="layui-input-inline select-parent">
-              <Select v-model="addAssetParentType">
-                <Option v-for="parentType in assetParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
-              </Select>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">子类别</label>
-          <div class="layui-input-inline">
-              <Select v-model="addAssetChildType">
-                <Option v-for="childType in assetChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
-              </Select>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">自定义名称</label>
-          <div class="layui-input-inline">
-              <input class="layui-input" v-model="addAssetExtName" type="text" placeholder="自定义名称"/>
-          </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">金额</label>
-            <div class="layui-input-inline">
-                <input class="layui-input" v-model="addAssetAmount" type="text" placeholder="金额"/>
-            </div>
-        </div>
-      </div>
-    </div>
+    <Modal v-model="addAssetModal" title="添加资产信息">
+      <Row type="flex" justify="center">
+        <Col span="10">父类别</Col>
+        <Col span="10">
+          <Select v-model="addAssetParentType">
+            <Option v-for="parentType in assetParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">子类别</Col>
+        <Col span="10">
+          <Select v-model="addAssetChildType">
+            <Option v-for="childType in assetChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">自定义名称</Col>
+        <Col span="10"><Input v-model="addAssetExtName" type="text" placeholder="自定义名称"/></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">金额</Col>
+        <Col span="10"><Input v-model="addAssetAmount" type="text" placeholder="金额"/></Col>
+      </Row>
+    </Modal>
+    <Modal v-model="assetModal" title="资产详情">
+      <Row type="flex" justify="center">
+        <Col span="10">名称</Col>
+        <Col span="10"><Input type="text" v-model="assetName" readonly/></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">金额</Col>
+        <Col span="10"><Input v-model="assetAmount" type="text" placeholder="金额"/></Col>
+      </Row>
+    </Modal>
     <div style="display: none;" id="assetLayerContent">
         <div class="layui-form" style="margin: 20px 20px 20px 0;">
             <input v-model="assetId" type="hidden"/>
@@ -202,7 +206,9 @@ export default {
       liabilityParentList: [],
       liabilityChildList: [],
       assetParentList: [],
-      assetChildList: []
+      assetChildList: [],
+      addAssetModal: false,
+      addLiabilityModal: false
     }
   },
   filters: {
@@ -225,8 +231,10 @@ export default {
       this.liabilityPaid = payload.paid
     },
     addAsset: function () {
+      this.addAssetModal = true
     },
     addLiability: function () {
+      this.addLiabilityModal = true
     },
     loadAssetInfo: function () {
       API.requestAssetManage().then((resp) => {
@@ -276,3 +284,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.ivu-row-flex {
+  margin: 0.15rem 0;
+}
+</style>

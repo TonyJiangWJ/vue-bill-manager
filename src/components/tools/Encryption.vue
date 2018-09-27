@@ -129,7 +129,7 @@ export default {
         for (var i = 0; i < contentArray.length; i++) {
           result += encrypt.encrypt(contentArray[i])
           if (i < contentArray.length - 1) {
-            result += ''
+            result += ';'
           }
         }
 
@@ -169,9 +169,9 @@ export default {
   },
   mounted () {
     var clipboard = new ClipboardJS('.clip-btn')
-
+    let self = this
     clipboard.on('success', function (e) {
-      this.debug('复制成功')
+      self.debug('复制成功')
     })
   }
 
