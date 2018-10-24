@@ -5,13 +5,16 @@
       <Col :xs="24" :sm="18">
         <Row>
           <Col span="8"><h3>工具名称</h3></Col>
-          <Col span="8"><h4>当前时间:</h4></Col>
-          <Col span="8"><span @dblclick="copyNowDateTime">{{nowDateTime}}</span></Col>
         </Row>
         <Divider/>
         <Row>
           <Col span="8">时间转换</Col>
-          <Col span="8"><InputNumber v-model="timestamp13" placeholder="timestamp13"/></Col>
+          <Col span="8"><h4>当前时间:</h4><span @dblclick="copyNowDateTime">{{nowDateTime}}</span></Col>
+          <Col span="8"></Col>
+        </Row>
+        <Row>
+          <Col span="8"></Col>
+          <Col span="8" offset="8"><InputNumber v-model="timestamp13" placeholder="timestamp13"/></Col>
           <Col span="8"><Button type="primary" @click="ttString">转换字符串</Button></Col>
         </Row>
         <Row>
