@@ -27,15 +27,34 @@
             </Col>
           </Row>
           <Row type="flex" justify="center" align="middle">
-            <Col :xs="12" :sm="8"><Checkbox v-model="checkBox.customProvidentPoint">自定义</Checkbox><label>公积金起征点:</label></Col>
             <Col :xs="12" :sm="8">
-              <InputNumber v-model="providentFundPoint" :disabled='!this.checkBox.customProvidentPoint' />
+              <Checkbox v-model="checkBox.customProvidentPoint">自定义</Checkbox><label>公积金起征点:</label>
+            </Col>
+            <Col :xs="12" :sm="8">
+              <Row type="flex" justify="center" align="middle">
+                <Col :sm="4">
+                  <InputNumber v-model="customProvidentPrecent"
+                    :max="100"
+                    :formatter="value => `${value}%`"
+                    :parser="value => value.replace('%', '')"
+                    :disabled='!this.checkBox.customProvidentPoint' />
+                </Col>
+                <Col :sm="20">
+                  <InputNumber v-model="providentFundPoint" :disabled='!this.checkBox.customProvidentPoint' />
+                </Col>
+              </Row>
             </Col>
           </Row>
           <Row type="flex" justify="center" align="middle">
             <Col :xs="12" :sm="8"><Checkbox v-model="checkBox.customTaxPoint">自定义</Checkbox><label>旧个税起征点:</label></Col>
             <Col :xs="12" :sm="8">
               <InputNumber v-model="taxPoint" :disabled='!this.checkBox.customTaxPoint'/>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center" align="middle">
+            <Col :xs="12" :sm="8"><Checkbox v-model="checkBox.customNewTaxPoint">自定义</Checkbox><label>新个税起征点:</label></Col>
+            <Col :xs="12" :sm="8">
+              <InputNumber v-model="config.newTaxPoint" :disabled='!this.checkBox.customNewTaxPoint'/>
             </Col>
           </Row>
           <Divider orientation="left">五险一金明细</Divider>
@@ -149,7 +168,9 @@
 </template>
 
 <script>
-
+/**
+ * 旧个税阶梯百分比和速算扣除数配置
+ */
 let oldTaxLadder = {
   step1: {
     percent: 0.03,
@@ -187,7 +208,9 @@ let oldTaxLadder = {
     discount: 13505
   }
 }
-
+/**
+ * 新个税阶梯百分比和速算扣除数配置
+ */
 let newTaxLadder = {
   step1: {
     percent: 0.03,
@@ -245,11 +268,11 @@ export default {
       inHandSalary: 0,
       newInHandSalary: 0,
       balanceBetweenNewOld: 0,
+      customProvidentPrecent: 12,
       config: {
         unemployScale: 0.005,
         endowmentScale: 0.08,
         medicalScale: 0.02,
-        providentScale: 0.12,
         newTaxPoint: 5000,
         maxProvidnetFundPoint: 24311,
         maxSocialInsurancePoint: 15274.74
@@ -257,7 +280,8 @@ export default {
       checkBox: {
         customSocialPoint: false,
         customProvidentPoint: false,
-        customTaxPoint: false
+        customTaxPoint: false,
+        customNewTaxPoint: false
       }
     }
   },
@@ -267,13 +291,13 @@ export default {
       this.unemploymentInsurance = (this.socialInsurancePoint * this.config.unemployScale).toFixed(2)
       this.endowmentInsurance = (this.socialInsurancePoint * this.config.endowmentScale).toFixed(2)
       this.medicalInsurance = (this.socialInsurancePoint * this.config.medicalScale).toFixed(2)
-      this.providentFund = (this.providentFundPoint * this.config.providentScale).toFixed(2)
+      this.providentFund = (this.providentFundPoint * this.providentScale).toFixed(2)
       this.afterInsurance = this.forTax = (
         this.beforeTax - this.socialInsurancePoint * (
           this.config.unemployScale +
           this.config.endowmentScale +
           this.config.medicalScale
-        ) - this.providentFundPoint * this.config.providentScale
+        ) - this.providentFundPoint * this.providentScale
       ).toFixed(2)
       this.calTaxFee()
       this.calNewTaxFee()
@@ -325,6 +349,9 @@ export default {
     }
   },
   computed: {
+    providentScale: function () {
+      return (this.customProvidentPrecent / 100.0).toFixed(2)
+    },
     unemploymentInsurancePercent: function () {
       return this.getPercent(this.unemploymentInsurance, this.beforeTax)
     },
@@ -343,7 +370,6 @@ export default {
     afterInsurancePercent: function () {
       return this.getPercent(this.afterInsurance, this.beforeTax)
     },
-
     newInHandSalaryPercent: function () {
       return this.getPercent(this.newInHandSalary, this.beforeTax)
     },
