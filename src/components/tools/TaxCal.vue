@@ -13,11 +13,18 @@
           <Row type="flex" justify="center" align="middle">
             <Col :xs="12" :sm="8"><label>税后工资:</label></Col>
             <Col :xs="12" :sm="8">
+              <InputNumber v-model="newInHandSalary" readonly/>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center" align="middle" v-if="checkBox.showOldTax">
+            <Col :xs="12" :sm="8"><label>(旧)税后工资:</label></Col>
+            <Col :xs="12" :sm="8">
               <InputNumber v-model="inHandSalary" readonly/>
             </Col>
           </Row>
           <Row type="flex" justify="center" align="middle">
-            <Col offset="8"><Button type="success" @click="calculate">计算</Button></Col>
+            <Col offset="8"><Button type="success" @click="calculate">计算</Button>&nbsp;
+            <Checkbox v-model="checkBox.showOldTax">显示旧个税信息</Checkbox></Col>
           </Row>
           <Divider/>
           <Row type="flex" justify="center" align="middle">
@@ -45,7 +52,7 @@
               </Row>
             </Col>
           </Row>
-          <Row type="flex" justify="center" align="middle">
+          <Row type="flex" justify="center" align="middle" v-if="checkBox.showOldTax">
             <Col :xs="12" :sm="8"><Checkbox v-model="checkBox.customTaxPoint">自定义</Checkbox><label>旧个税起征点:</label></Col>
             <Col :xs="12" :sm="8">
               <InputNumber v-model="taxPoint" :disabled='!this.checkBox.customTaxPoint'/>
@@ -105,7 +112,7 @@
             </Col>
           </Row>
           <Row type="flex" justify="center" align="middle">
-            <Col :xs="12" :sm="8"><label>应税总额:</label></Col>
+            <Col :xs="12" :sm="8"><label>应税总额(新/旧):</label></Col>
             <Col :xs="6" :sm="4">
               <Input v-model="forTaxStr" readonly/>
             </Col>
@@ -114,8 +121,8 @@
             </Col>
           </Row>
           <Divider/>
-          <Row type="flex" justify="center" align="middle">
-            <Col :xs="12" :sm="8"><label>个人所得税:</label></Col>
+          <Row type="flex" justify="center" align="middle" v-if="checkBox.showOldTax">
+            <Col :xs="12" :sm="8"><label>旧版个人所得税:</label></Col>
             <Col :xs="6" :sm="4">
               <Input v-model="taxFee" readonly/>
             </Col>
@@ -134,15 +141,6 @@
           </Row>
           <Divider/>
           <Row type="flex" justify="center" align="middle">
-            <Col :xs="12" :sm="8"><label>到手工资:</label></Col>
-            <Col :xs="6" :sm="4">
-              <Input v-model="inHandSalary" readonly/>
-            </Col>
-            <Col :xs="6" :sm="4">
-              <Input v-model="inHandSalaryPercent" readonly/>
-            </Col>
-          </Row>
-          <Row type="flex" justify="center" align="middle">
             <Col :xs="12" :sm="8"><label>新个税到手工资:</label></Col>
             <Col :xs="6" :sm="4">
               <Input v-model="newInHandSalary" readonly/>
@@ -151,7 +149,16 @@
               <Input v-model="newInHandSalaryPercent" readonly/>
             </Col>
           </Row>
-          <Row type="flex" justify="center" align="middle">
+          <Row type="flex" justify="center" align="middle" v-if="checkBox.showOldTax">
+            <Col :xs="12" :sm="8"><label>旧个税到手工资:</label></Col>
+            <Col :xs="6" :sm="4">
+              <Input v-model="inHandSalary" readonly/>
+            </Col>
+            <Col :xs="6" :sm="4">
+              <Input v-model="inHandSalaryPercent" readonly/>
+            </Col>
+          </Row>
+          <Row type="flex" justify="center" align="middle" v-if="checkBox.showOldTax">
             <Col :xs="12" :sm="8"><label>差额:</label></Col>
             <Col :xs="6" :sm="4">
               <Input v-model="balanceBetweenNewOld" readonly/>
@@ -281,7 +288,8 @@ export default {
         customSocialPoint: false,
         customProvidentPoint: false,
         customTaxPoint: false,
-        customNewTaxPoint: false
+        customNewTaxPoint: false,
+        showOldTax: false
       }
     }
   },
@@ -386,10 +394,10 @@ export default {
       return this.getPercent(this.forTax, this.beforeTax)
     },
     forTaxStr: function () {
-      return this.forTax === 0 ? null : (this.forTax - this.taxPoint) + '/' + (this.forTax - this.config.newTaxPoint)
+      return this.forTax === 0 ? null : (this.forTax - this.config.newTaxPoint) + '/' + (this.forTax - this.taxPoint)
     },
     forTaxPercentStr: function () {
-      return this.forTax === 0 ? null : this.getPercent((this.forTax - this.taxPoint), this.beforeTax) + '/' + this.getPercent((this.forTax - this.config.newTaxPoint), this.beforeTax)
+      return this.forTax === 0 ? null : this.getPercent((this.forTax - this.config.newTaxPoint), this.beforeTax) + '/' + this.getPercent((this.forTax - this.taxPoint), this.beforeTax)
     }
   },
   watch: {
