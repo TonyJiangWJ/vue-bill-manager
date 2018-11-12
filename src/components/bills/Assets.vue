@@ -126,9 +126,7 @@
             </h2>
         </div>
         <div style="margin: 5px;">
-            <div class="layui-collapse layui-text">
-              <asset-item v-for="assetModel in assetModels" :key="assetModel.type" @itemClick="handleAssetClick" :asset-model='assetModel'></asset-item>
-            </div>
+          <asset-item :assetModels="assetModels"></asset-item>
         </div>
     </div>
     <div class="layui-col-md6 layui-col-xs12">
@@ -178,6 +176,7 @@ export default {
   name: 'Assets',
   data () {
     return {
+      collsapeAsset: false,
       assetId: '',
       assetType: '',
       assetName: '',
@@ -208,6 +207,7 @@ export default {
       assetParentList: [],
       assetChildList: [],
       addAssetModal: false,
+      assetModal: false,
       addLiabilityModal: false
     }
   },

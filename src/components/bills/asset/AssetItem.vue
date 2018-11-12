@@ -1,16 +1,13 @@
 <template>
-  <div class="layui-colla-item">
-    <div class="layui-colla-title">
-        <h4 @click="toggleShow"><span>{{assetModel.type}}</span> <span>￥{{total}}</span></h4>
-    </div>
-    <transition name="fade">
-      <div class="layui-colla-content layui-show" v-if="show">
-          <ul>
-              <asset-item-detail v-for='asset in assetModel.assetList' :asset-id="asset.id" :key='asset.id' :asset-name='asset.name' :asset-type='asset.assetType' :asset-amount='asset.amount' @itemClick='handleAssetClick'></asset-item-detail>
-          </ul>
+  <Collapse v-model="collapseAsset">
+    <Panel v-for="assetModel in assetModels" :key="assetModel.type" @itemClick="handleAssetClick" :name="assetModel.type">
+      <span>{{assetModel.type}}</span> <span>￥{{assetModel ? (assetModel.total / 100).toFixed(2) : ''}}</span>
+      <div slot="content" v-for="asset in assetModel.assetList" :key="asset.id">
+        <span>{{asset.name}}</span>&nbsp;
+        <span>￥{{(asset.amount/100).toFixed(2)}}</span>
       </div>
-    </transition>
-  </div>
+    </Panel>
+  </Collapse>
 </template>
 
 <script>
@@ -19,8 +16,8 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 export default {
   name: 'AssetItem',
   props: {
-    assetModel: {
-      type: Object
+    assetModels: {
+      type: Array
     }
   },
   components: {
@@ -28,13 +25,12 @@ export default {
   },
   data () {
     return {
+      collapseAsset: '',
       show: false
     }
   },
   computed: {
-    total: function () {
-      return this.assetModel ? (this.assetModel.total / 100).toFixed(2) : ''
-    }
+
   },
   methods: {
     handleAssetClick: function (payload) {
