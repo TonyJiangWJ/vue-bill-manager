@@ -12,7 +12,7 @@
       </template>
       <MenuGroup title="使用">
         <MenuItem name="bills">账单</MenuItem>
-        <MenuItem name="3-2">资产列表</MenuItem>
+        <MenuItem name="assetList">资产列表</MenuItem>
         <MenuItem name="3-3">支付宝账单上传</MenuItem>
       </MenuGroup>
       <MenuGroup title="用户">
@@ -53,6 +53,8 @@ export default {
         this.$router.push('/tools')
       } else if (name === 'bills') {
         this.$router.push('/bills')
+      } else if (name === 'assetList') {
+        this.$router.push('/assetList')
       } else if (name === 'logout') {
         this.logout()
       } else if (name === 'goLogin') {

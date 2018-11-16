@@ -1,38 +1,51 @@
 <template>
-  <div class="layui-colla-item">
-    <h4 class="layui-colla-title" @click="toggleShow">
-        <span>{{liabilityModel.type}}</span>&nbsp;
-        <span>￥{{liabilityModel.total|longToString}}</span>
-    </h4>
-    <transition name="fade">
-      <div class="layui-colla-content layui-show" v-if="show">
-          <ul>
-              <li v-for="liability in liabilityModel.liabilityList" :key="liability.name+liability.amount" @click.stop="clickTimeLineItem(liability)">
-                  <input type="hidden" name="id" :value="liability.id"/>
-                  <span>{{liability.name}}</span>&nbsp;
-                  <span>￥{{liability.amount|longToString}}</span>
-                  <span :style="liability.paid>0?'':'display:none;'">
-                      (<span style="color: #20f700;">{{liability.paid|longToString}}</span>)
-                  </span>
-                  &nbsp;
-                  <span>{{liability.index}}</span><span>/</span><span>{{liability.installment}}</span>&nbsp;
-            <span>还款日：{{liability.repaymentDay}}</span>
-              </li>
-          </ul>
+  <li @click.stop="clickTimeLineItem">
+    <div>
+      <span>{{liability.name}}</span>&nbsp;
+      <span>￥{{liability.amount|longToString}}</span>
+      <span :style="liability.paid>0?'':'display:none;'">
+          (<span style="color: #20f700;">{{liability.paid|longToString}}</span>)
+      </span>
+      &nbsp;
+      <span>{{liability.index}}</span><span>/</span><span>{{liability.installment}}</span>&nbsp;
+      <span>还款日：{{liability.repaymentDay}}</span>
+    </div>
+    <Modal v-model="liabilityModal" title="资产详情" :width="380">
+      <Row type="flex" justify="center">
+        <Col span="10">类别</Col>
+        <Col span="10"><Input type="text" :value="liability.name" :maxlength="20" readonly/></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">金额</Col>
+        <Col span="10"><Input v-model="liabilityAmount" type="text" @on-blur="checkAmount" placeholder="金额"/></Col>
+      </Row>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">已还金额</Col>
+        <Col span="10"><Input v-model="liabilityPaid" type="text" @on-blur="checkPaid" placeholder="已还金额"/></Col>
+      </Row>
+      <div slot="footer">
+        <Button type="dashed" @click="liabilityPaid=liabilityAmount">还清</Button>
+        <Button type="default" @click="liabilityModal=false">取消</Button>
+        <Button type="primary" @click="updateLiabilityInfo">确定</Button>
       </div>
-    </transition>
-  </div>
+    </Modal>
+  </li>
 </template>
 
 <script>
+import API from '@/js/api'
+
 export default {
   name: 'TimeLineItemDetail',
   props: {
-    liabilityModel: {}
+    liability: {}
   },
   data () {
     return {
-      show: false
+      liabilityModal: false,
+      liabilityAmount: (this.liability.amount / 100).toFixed(2),
+      liabilityPaid: (this.liability.paid / 100).toFixed(2)
     }
   },
   filters: {
@@ -42,12 +55,33 @@ export default {
   },
   methods: {
     clickTimeLineItem: function (liability) {
-      this.debug('点击了timeLine中的内容' + JSON.stringify(liability))
-      this.$emit('timeLineClick', liability)
+      this.liabilityModal = true
+      this.liabilityAmount = (this.liability.amount / 100).toFixed(2)
+      this.liabilityPaid = (this.liability.paid / 100).toFixed(2)
     },
-    toggleShow: function () {
-      this.show = !this.show
+    checkAmount: function () {
+      this.liabilityAmount = this.checkNumic(this.liabilityAmount)
+    },
+    checkPaid: function () {
+      this.liabilityPaid = this.checkNumic(this.liabilityPaid)
+    },
+    updateLiabilityInfo: function () {
+      let request = {
+        id: this.liability.id,
+        amount: (this.liabilityAmount * 100).toFixed(0),
+        paid: (this.liabilityPaid * 100).toFixed(0)
+      }
+      API.updateLiability(request).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.debug('更新成功')
+          this.$emit('reloadAssetInfo')
+        }
+      })
+      this.liabilityModal = false
     }
+  },
+  created: function () {
+    // this.debug(JSON.stringify(this.liabilityModel.liabilityList))
   }
 }
 </script>

@@ -1,10 +1,13 @@
 <template>
   <Collapse v-model="collapseAsset">
-    <Panel v-for="assetModel in assetModels" :key="assetModel.type" @itemClick="handleAssetClick" :name="assetModel.type">
-      <span>{{assetModel.type}}</span> <span>￥{{assetModel ? (assetModel.total / 100).toFixed(2) : ''}}</span>
-      <div slot="content" v-for="asset in assetModel.assetList" :key="asset.id">
-        <span>{{asset.name}}</span>&nbsp;
-        <span>￥{{(asset.amount/100).toFixed(2)}}</span>
+    <Panel v-for="assetModel in assetModels"
+      :key="assetModel.type"
+      :name="assetModel.type">
+      <type-title :type="assetModel.type" :total="assetModel.total"/>
+      <div slot="content">
+        <ul class="asset-detail">
+          <asset-item-detail @reloadAssetInfo="reloadAssetInfo" v-for="asset in assetModel.assetList" :key="asset.id" :asset="asset"/>
+        </ul>
       </div>
     </Panel>
   </Collapse>
@@ -12,6 +15,7 @@
 
 <script>
 import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
+import TypeTitle from '@/components/bills/common/TypeTitle'
 
 export default {
   name: 'AssetItem',
@@ -21,7 +25,8 @@ export default {
     }
   },
   components: {
-    AssetItemDetail
+    AssetItemDetail,
+    TypeTitle
   },
   data () {
     return {
@@ -33,8 +38,8 @@ export default {
 
   },
   methods: {
-    handleAssetClick: function (payload) {
-      this.$emit('itemClick', payload)
+    reloadAssetInfo: function (payload) {
+      this.$emit('reloadAssetInfo', payload)
     },
     toggleShow: function () {
       this.show = !this.show
@@ -42,3 +47,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.asset-detail {
+  padding: 5px;
+}
+.asset-detail > li {
+  list-style-type: disc;
+}
+</style>

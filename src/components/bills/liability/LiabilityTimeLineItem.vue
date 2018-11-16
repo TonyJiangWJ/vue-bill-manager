@@ -1,28 +1,41 @@
 <template>
-  <li class="layui-timeline-item">
-    <i class="layui-icon layui-timeline-axis" @click="toggleShowDetail">&#xe63f;</i>
-    <div class="layui-timeline-content layui-text">
-        <h3 class="layui-timeline-title">
+  <TimelineItem>
+    <div>
+        <h3 @click.stop="toggleShowDetail">
             <span>{{monthLiabilityModel.month}}</span>&nbsp;
             <span>￥{{monthLiabilityModel.total|longToString}}</span>
             <span :style="{ color: monthLiabilityModel.assetAfterThisMonth>0 ? '#008000' : '#ff0000' }">￥{{monthLiabilityModel.assetAfterThisMonth|longToString}}</span>
         </h3>
         <transition name="fade">
-          <div v-if="show" class="layui-collapse">
-            <time-line-item-detail @timeLineClick="handleTimeLineClick" v-for="liabilityModel in monthLiabilityModel.liabilityModels" :key="liabilityModel.type+monthLiabilityModel.month" :liability-model="liabilityModel"></time-line-item-detail>
-          </div>
+          <Collapse v-if="show">
+            <Panel v-for="liabilityModel in monthLiabilityModel.liabilityModels"
+              :key="liabilityModel.type+monthLiabilityModel.month">
+              <type-title :type="liabilityModel.type" :total="liabilityModel.total"/>
+              <div slot="content">
+                <ul class="liability-detail">
+                  <time-line-item-detail v-for="liability in liabilityModel.liabilityList"
+                    :key="liability.name+liability.amount"
+                    :liability="liability"
+                    @reloadAssetInfo="reloadAssetInfo">
+                  </time-line-item-detail>
+                </ul>
+              </div>
+            </Panel>
+          </Collapse>
         </transition>
     </div>
-  </li>
+  </TimelineItem>
 </template>
 
 <script>
 import TimeLineItemDetail from '@/components/bills/liability/TimeLineItemDetail'
+import TypeTitle from '@/components/bills/common/TypeTitle'
 
 export default {
   name: 'LiabilityTimeLineItem',
   components: {
-    TimeLineItemDetail
+    TimeLineItemDetail,
+    TypeTitle
   },
   props: {
     monthLiabilityModel: {}
@@ -41,18 +54,24 @@ export default {
     toggleShowDetail: function () {
       this.show = !this.show
     },
-    handleTimeLineClick: function (payload) {
-      this.$emit('timeLineClick', payload)
+    reloadAssetInfo: function (payload) {
+      this.$emit('reloadAssetInfo', payload)
     }
   }
 }
 </script>
 
-<style lang="postcss">
+<style scoped>
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+.liability-detail {
+  padding: 5px;
+}
+.liability-detail > li {
+  list-style-type: disc;
 }
 </style>

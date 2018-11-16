@@ -62,7 +62,7 @@ const router = new Router({
       }]
     },
     {
-      path: '/bills',
+      path: '/assetList',
       component: Bills,
       children: [{
         path: '',

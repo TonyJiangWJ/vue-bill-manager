@@ -7,6 +7,7 @@ import router from './router'
 // 自定义全局方法
 import DateUtil from '@/js/DateUtil'
 import LogUtil from '@/js/LogUtil'
+import CommonUtil from '@/js/CommonUtil'
 
 import 'iview/dist/styles/iview.css'
 
@@ -18,6 +19,7 @@ Vue.config.productionTip = false
 Vue.use(DateUtil)
 Vue.use(LogUtil)
 Vue.use(iView)
+Vue.use(CommonUtil)
 
 /* eslint-disable no-new */
 new Vue({
