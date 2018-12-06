@@ -5,7 +5,7 @@
 - 个人账单管理（开发中）
 
  >## live demo
- - http://112.74.175.214/b/index.html#/tools/
+ - http://106.12.40.230/
 
 ## Build Setup
 
