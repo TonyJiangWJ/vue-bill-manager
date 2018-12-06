@@ -1,33 +1,34 @@
 <template>
-  <div class="layui-colla-item" @click="toggleShow">
-    <div class="layui-colla-title">
-        <h4>
-            <span>{{liabilityModel.type}}</span>&nbsp;
-            <span>￥{{liabilityModel.total|longToString}}</span>
-        </h4>
-    </div>
-    <transition name="fade">
-      <div class="layui-colla-content layui-show" v-if="show">
-          <ul>
-              <li v-for="liability in liabilityModel.liabilityList" :key="liability.id" @click.stop="show=show">
-                  <span>{{liability.name}}</span>&nbsp;
-                  <span>￥{{liability.amount|longToString}}</span>
-              </li>
-          </ul>
+  <Collapse v-model="collapseLiability">
+    <Panel v-for="liabilityModel in liabilityModels" :key="liabilityModel.type" :name="liabilityModel.type">
+      <type-title :type="liabilityModel.type" :total="liabilityModel.total"/>
+      <div slot="content" v-for="liability in liabilityModel.liabilityList" :key="liability.id">
+        <ul class="liability-detail">
+          <liability-item-detail :liability="liability"/>
+        </ul>
       </div>
-    </transition>
-  </div>
+    </Panel>
+  </Collapse>
 </template>
 
 <script>
+import TypeTitle from '@/components/bills/common/TypeTitle'
+import LiabilityItemDetail from '@/components/bills/liability/LiabilityItemDetail'
+
 export default {
   name: 'LiabilityItem',
   props: {
-    liabilityModel: Object
+    liabilityModels: {
+      type: Array
+    }
+  },
+  components: {
+    TypeTitle, LiabilityItemDetail
   },
   data () {
     return {
-      show: false
+      show: false,
+      collapseLiability: ''
     }
   },
   filters: {
@@ -42,3 +43,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.liability-detail {
+  padding: 5px;
+}
+.liability-detail > li {
+  list-style-type: disc;
+}
+</style>

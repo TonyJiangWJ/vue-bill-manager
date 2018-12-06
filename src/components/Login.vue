@@ -1,41 +1,32 @@
 <template>
-    <div class="layui-container">
-      <div v-if="!logined">
-        <div class="layui-form login-container">
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户名</label>
-                <div class="layui-input-inline">
-                  <Tooltip content="请输入用户名" placement="right" :disabled="!showUserNameError" :always="showUserNameError">
-                    <input type="text" class="layui-input" name="userName" v-model="userName" placeholder="用户名"/>
-                  </Tooltip>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">密码</label>
-                <div class="layui-input-inline">
-                  <Tooltip content="密码最短6位" placement="right" :disabled="!showPwdError" :always="showPwdError">
-                    <input type="password" class="layui-input" name="password" v-model="password" placeholder="密码"/>
-                  </Tooltip>
-                </div>
-            </div>
-            <div v-if="loginError" class="layui-form-item">
-              <span class="error">账号或密码错误</span>
-            </div>
-            <div class="button_container">
-              <button class="layui-btn layui-btn-radius" style="width: 100%;" @click="doLogin">登录</button>
-            </div>
-            <div class="button_container">
-              <button class="layui-btn layui-btn-radius layui-btn-primary" style="width: 100%;" @click="goRegister">注册</button>
-            </div>
-        </div>
-    </div>
-    <div v-else>
-      <div class="layui-form login-container">
-        <div class="layui-form-item button_container">
-          <button class="layui-btn layui-btn-radius" style="width: 100%;" @click="logout">退出登录</button>
-        </div>
-      </div>
-    </div>
+    <div class="login-container">
+      <template v-if="!logined">
+      <Row type="flex" justify="center" align="middle">
+        <Col span="8">用户名:</Col>
+        <Col span="12">
+          <Tooltip content="请输入用户名" placement="right" :disabled="!showUserNameError" :always="showUserNameError">
+            <Input type="text" placeholder="请输入用户名" v-model="userName"/>
+          </Tooltip>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center" align="middle">
+        <Col span="8">密&nbsp;&nbsp;&nbsp;码:</Col>
+        <Col span="12">
+          <Tooltip :content="loginError?'用户名或密码错误':'密码最短6位'" placement="right" :disabled="!(showUserNameError||loginError)" :always="showUserNameError">
+            <Input type="password" placeholder="请输入密码" v-model="password"/>
+          </Tooltip>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center" align="middle">
+        <Col span="8"><Button type="success" @click="doLogin">登录</Button></Col>
+        <Col span="8"><Button type="primary" @click="goRegister">注册</Button></Col>
+      </Row>
+      </template>
+      <template v-else>
+        <Row type="flex" justify="center" align="middle">
+          <Col span="8"><Button type="warning"  @click="logout">退出登录</Button></Col>
+        </Row>
+      </template>
   </div>
 </template>
 
@@ -124,7 +115,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .error {
   color: red;
   font-size: 0.25rem;
@@ -139,6 +130,9 @@ export default {
   max-width: 400px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   padding: 50px 50px 30px;
+}
+.login-container > div {
+  margin: 0.5rem 0;
 }
 
 .button_container {

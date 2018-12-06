@@ -1,5 +1,10 @@
 export const host = 'http://localhost:1310'
-export const rsaPubKey = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnre9siV2I0fLjcNhnOtkDOlbgJ3FgOs83+DHt9KfhG4tmoTna2k9KLeVs5A+le9ilkDIkhEuutP448rtuyLrxfXcKIDD2fzq6MEEeHurJy0U/ePTx4uPLJaIshMmNeLNs6ngkSFtI2SuNdDO8s/FcsZ2l3gb20qRCSzDZubM8iQIDAQAB'
+export const rsaPubKeyRelease = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCYBqJdy/aU5q1krBvRBDUn6WivukGiSBmlEqJbeDSTGDkyxIW6+adOHwKZhF+bDRFMPWZcqV0v2fgMbKKgoQIlCzDFGNa+4bTV5HsFq261kmwKVRZIYsSYks9P4yrkA4FwmnwR0Rc8blYOhxsqqekHcWZVHFrnLSavOiAQake2XQIDAQAB'
+// export const rsaPubKeyDev = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDEo9qWXCI89ldwzLvTFNdbXAlIWHJmypkk+hxCZaKvtbIGvJTzDYjaRjrjGXYkpWd/AHZ9CPqFJxcNGq/rbCUDcptHLZsyjooYQ0m7TvRjRyMQHmBJWPZp7CrKqhsPwu4CU2fbbBTc99S7Uqdt5kOGl/KmeGT5tAUFzl1QQCionQIDAQAB'
+export const rsaPubKeyDev = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCWP5quyXF73itsjeu2DBEam6jpb/r6sw2m8x6jKmz6I8wsytXAi9xVgrvj157RuSYWs4lN10XebuwWWT5JShYhJUib5kAdHokX6p2v7WE54mNo+l0KOdMHmhxp2G2W40NOkBkbNU20DUdL79FVTbUVYRx27s3FR3GEnLpQTA1H6QIDAQAB'
+
+export const isDev = process.env.NODE_ENV !== 'production'
+export const rsaPubKey = isDev ? rsaPubKeyDev : rsaPubKeyRelease
 // 需要登录的路由路径
-export const needLogin = ['/bills']
-export const enableLog = process.env.NODE_ENV !== 'production'
+export const needLogin = ['/bills', '/assetList', '/asset/type']
+export const enableLog = isDev

@@ -1,44 +1,45 @@
 <template>
-  <div class="layui-colla-item">
-    <div class="layui-colla-title">
-        <h4 @click="toggleShow"><span>{{assetModel.type}}</span> <span>￥{{total}}</span></h4>
-    </div>
-    <transition name="fade">
-      <div class="layui-colla-content layui-show" v-if="show">
-          <ul>
-              <asset-item-detail v-for='asset in assetModel.assetList' :asset-id="asset.id" :key='asset.id' :asset-name='asset.name' :asset-type='asset.assetType' :asset-amount='asset.amount' @itemClick='handleAssetClick'></asset-item-detail>
-          </ul>
+  <Collapse v-model="collapseAsset">
+    <Panel v-for="assetModel in assetModels"
+      :key="assetModel.type"
+      :name="assetModel.type">
+      <type-title :type="assetModel.type" :total="assetModel.total"/>
+      <div slot="content">
+        <ul class="asset-detail">
+          <asset-item-detail @reloadAssetInfo="reloadAssetInfo" v-for="asset in assetModel.assetList" :key="asset.id" :asset="asset"/>
+        </ul>
       </div>
-    </transition>
-  </div>
+    </Panel>
+  </Collapse>
 </template>
 
 <script>
 import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
+import TypeTitle from '@/components/bills/common/TypeTitle'
 
 export default {
   name: 'AssetItem',
   props: {
-    assetModel: {
-      type: Object
+    assetModels: {
+      type: Array
     }
   },
   components: {
-    AssetItemDetail
+    AssetItemDetail,
+    TypeTitle
   },
   data () {
     return {
+      collapseAsset: '',
       show: false
     }
   },
   computed: {
-    total: function () {
-      return this.assetModel ? (this.assetModel.total / 100).toFixed(2) : ''
-    }
+
   },
   methods: {
-    handleAssetClick: function (payload) {
-      this.$emit('itemClick', payload)
+    reloadAssetInfo: function (payload) {
+      this.$emit('reloadAssetInfo', payload)
     },
     toggleShow: function () {
       this.show = !this.show
@@ -46,3 +47,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.asset-detail {
+  padding: 5px;
+}
+.asset-detail > li {
+  list-style-type: disc;
+}
+</style>

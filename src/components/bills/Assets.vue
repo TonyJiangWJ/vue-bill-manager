@@ -1,159 +1,106 @@
 <template>
-  <div>
-    <div style="display: none;" id="addAssetLayerContent">
-      <div class="layui-form" style="margin: 20px 20px 20px 0;">
-        <div class="layui-form-item">
-          <label class="layui-form-label">父类别</label>
-          <div class="layui-input-inline select-parent">
-              <Select v-model="addAssetParentType">
-                <Option v-for="parentType in assetParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
-              </Select>
-          </div>
-        </div>
-        <div class="layui-form-item">
-          <label class="layui-form-label">子类别</label>
-          <div class="layui-input-inline">
-              <Select v-model="addAssetChildType">
-                <Option v-for="childType in assetChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
-              </Select>
-          </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">金额</label>
-            <div class="layui-input-inline">
-                <input class="layui-input" v-model="addAssetAmount" type="text" placeholder="金额"/>
-            </div>
-        </div>
+  <div class="asset-container">
+    <Modal v-model="addAssetModal" title="添加资产信息" :width="380" @on-ok="doAddAsset">
+      <Row type="flex" justify="center">
+        <Col span="10">父类别</Col>
+        <Col span="10">
+        <Select v-model="addAssetParentType">
+          <Option v-for="parentType in assetParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
+        </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">子类别</Col>
+        <Col span="10">
+        <Select v-model="addAssetChildType">
+          <Option v-for="childType in assetChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
+        </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">自定义名称</Col>
+        <Col span="10"><Input v-model="addAssetExtName" type="text" placeholder="自定义名称" /></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">金额</Col>
+        <Col span="10"><Input v-model="addAssetAmount" type="text" @on-blur="checkAssetAmount" placeholder="金额" /></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">随时使用</Col>
+        <Col span="10">
+          <i-switch v-model="available">
+            <span slot="open">是</span>
+            <span slot="close">否</span>
+          </i-switch>
+        </Col>
+      </Row>
+    </Modal>
+    <Modal v-model="addLiabilityModal" title="添加分期账单" :width="380" @on-ok="doAddLiability">
+      <Row type="flex" justify="center">
+        <Col span="10">父类别</Col>
+        <Col span="10">
+          <Select v-model="liabilityParent">
+            <Option v-for="parentType in liabilityParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">子类别</Col>
+        <Col span="10">
+          <Select v-model="liabilityChildType">
+            <Option v-for="childType in liabilityChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">分期期数</Col>
+        <Col span="10"><InputNumber v-model="installment" placeholder="分期期数" style="width:100%"/></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">首期还款日</Col>
+        <Col span="10"><DatePicker type="date" placeholder="首期还款日" v-model="repaymentDay" style="width:100%"/></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">总金额</Col>
+        <Col span="10"><Input v-model="liabilityAmount" type="text" @on-blur="checkLiabilityAmount" placeholder="总金额" /></Col>
+      </Row>
+    </Modal>
+    <Divider orientation="left">概览</Divider>
+    <Row type="flex" justify="center" align="top" :gutter="5">
+      <Col :xs="24" :sm="12">
+        <h2>
+          <span style="margin-left: 5px;">总资产</span>
+          <span style="color: green;">{{totalAsset|longToString}}</span>
+          <Button size="small" type="default" @click="addAsset">添加资产</Button>
+        </h2>
+        <asset-item :assetModels="assetModels" @reloadAssetInfo="loadAssetInfo"/>
+      </Col>
+      <Col :xs="24" :sm="12">
+        <h2>
+          <span style="margin-left: 5px;">总负债</span>
+          <span style="color: red;">￥{{totalLiability|longToString}}</span>
+          <Button size="small" type="default" @click="addLiability">添加分期账单</Button>
+        </h2>
+        <liability-item :liabilityModels="liabilityModels" />
+      </Col>
+    </Row>
+    <div>
+      <div style="margin: 5px;">
+        <h2>净资产 <span style="color: #ff0000;" :style="'color: '+(cleanAsset>0 ? '#008000' : '#ff0000')">{{cleanAsset|longToString}}</span></h2>
+        <h2>现金流 <span style="color: #ff0000;" :style="'color: '+(availableAsset>0 ? '#008000' : '#ff0000')">{{availableAsset|longToString}}</span></h2>
       </div>
     </div>
-    <div style="display: none;" id="assetLayerContent">
-        <div class="layui-form" style="margin: 20px 20px 20px 0;">
-            <input v-model="assetId" type="hidden"/>
-            <div class="layui-form-item">
-                <label class="layui-form-label">类别</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" v-model="assetName" type="text" readonly="readonly"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">金额</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" v-model="assetAmount" type="text" placeholder="金额"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="display: none;" id="liabilityLayerContent">
-        <div class="layui-form" style="margin: 20px 20px 20px 0;">
-            <div class="layui-form-item">
-                <label class="layui-form-label">类别</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" v-model="liabilityType" type="text" readonly="readonly"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">金额</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" v-model="liabilityAmount" type="text" placeholder="金额"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">已还金额</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" v-model="liabilityPaid" type="text" placeholder="已还金额"/>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div style="display: none;" id="addLiabilityLayerContent">
-        <div class="layui-form" style="margin: 20px 20px 20px 0;">
-            <div class="layui-form-item">
-                <label class="layui-form-label">父类别</label>
-                <div class="layui-input-inline select-parent">
-                    <Select v-model="liabilityParent">
-                      <Option v-for="parentType in liabilityParentList" :value="parentType.id" :key="parentType.id">{{ parentType.typeDesc }}</Option>
-                    </Select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">子类别</label>
-                <div class="layui-input-inline">
-                    <Select v-model="liabilityChildType">
-                      <Option v-for="childType in liabilityChildList" :value="childType.id" :key="childType.id">{{ childType.typeDesc }}</Option>
-                    </Select>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">分期期数</label>
-                <div class="layui-input-inline">
-                    <input name="installment" v-model="installment" class="layui-input" placeholder="分期期数" type="number"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">首期还款日</label>
-                <div class="layui-input-inline">
-                    <input id="repaymentDay" v-model="repaymentDay" type="text" class="layui-input" placeholder="首期还款日"/>
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">总金额</label>
-                <div class="layui-input-inline">
-                    <input name="amount" v-model="liabilityAmount" type="number" class="layui-input" placeholder="总金额"/>
-                </div>
-            </div>
-        </div>
-    </div>
-    <fieldset class="layui-elem-field layui-field-title">
-        <legend>概览</legend>
-    </fieldset>
-    <div class="layui-col-md6 layui-col-xs12">
-        <div>
-            <h2>
-                <span style="margin-left: 5px;">总资产</span>
-                <span style="color: green;">{{totalAsset|longToString}}</span>
-                <button class="layui-btn layui-btn-xs layui-btn-normal" @click="addAsset">添加资产</button>
-            </h2>
-        </div>
-        <div style="margin: 5px;">
-            <div class="layui-collapse layui-text">
-              <asset-item v-for="assetModel in assetModels" :key="assetModel.type" @itemClick="handleAssetClick" :asset-model='assetModel'></asset-item>
-            </div>
-        </div>
-    </div>
-    <div class="layui-col-md6 layui-col-xs12">
-        <div>
-            <h2>
-                <span style="margin-left: 5px;">总负债</span>
-                <span style="color: red;">￥{{totalLiability|longToString}}</span>
-            </h2>
-        </div>
-        <div style="margin: 5px;">
-            <div class="layui-collapse layui-text">
-              <liability-item v-for="liabilityModel in liabilityModels" :key="liabilityModel.type" :liability-model="liabilityModel"></liability-item>
-            </div>
-        </div>
-    </div>
     <div class="layui-col-md12 layui-col-xs12">
-        <div style="margin: 5px;">
-            <h2>净资产 <span style="color: #ff0000;" :style="'color: '+(cleanAsset>0 ? '#008000' : '#ff0000')">{{cleanAsset|longToString}}</span></h2>
-        </div>
-    </div>
-    <div class="layui-col-md12 layui-col-xs12">
-        <fieldset class="layui-elem-field layui-field-title">
-            <legend>分期还款
-                <button class="layui-btn layui-btn-xs layui-btn-normal" @click="addLiability">添加分期账单</button>
-            </legend>
-        </fieldset>
-
-        <div>
-            <ul class="layui-timeline">
-              <liability-time-line-item @timeLineClick="handleTimeLineClick" v-for="monthLiabilityModel in monthLiabilityModels"
-                    :key="monthLiabilityModel.month"
-                    :month-liability-model="monthLiabilityModel">
-              </liability-time-line-item>
-            </ul>
-        </div>
+      <Divider orientation="left">分期还款
+      </Divider>
+      <Timeline>
+        <liability-time-line-item
+          v-for="monthLiabilityModel in monthLiabilityModels"
+          :key="monthLiabilityModel.month"
+          :month-liability-model="monthLiabilityModel"
+          @reloadAssetInfo="loadAssetInfo">
+        </liability-time-line-item>
+      </TimeLine>
     </div>
   </div>
 </template>
@@ -163,34 +110,26 @@ import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
 import AssetItem from '@/components/bills/asset/AssetItem'
 import LiabilityItem from '@/components/bills/liability/LiabilityItem'
 import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
-import '@/assets/css/modules/laydate/default/laydate.css'
-// { requestAssetManage, updateAsset, updateLiability,
-//   getLiabilityParents, getAssetParents, getChildByParent,
-//   addLiability
-// }
 import API from '@/js/api.js'
 export default {
   name: 'Assets',
   data () {
     return {
-      assetId: '',
-      assetType: '',
-      assetName: '',
-      assetAmount: '',
+      collsapeAsset: false,
       addAssetParentType: '',
       addAssetChildType: '',
-      addAssetAmount: '',
-      liabilityType: '',
-      liabilityAmount: '',
-      liabilityPaid: '',
+      addAssetAmount: null,
+      addAssetExtName: '',
+      available: true,
       liabilityParent: '',
       liabilityChildType: '',
-      installment: '',
+      installment: null,
       repaymentDay: '',
-      amount: '',
+      liabilityAmount: null,
       totalAsset: '',
       totalLiability: '',
       cleanAsset: '',
+      availableAsset: '',
       monthLiability: {
         assetAfterThisMonth: ''
       },
@@ -200,7 +139,9 @@ export default {
       liabilityParentList: [],
       liabilityChildList: [],
       assetParentList: [],
-      assetChildList: []
+      assetChildList: [],
+      addAssetModal: false,
+      addLiabilityModal: false
     }
   },
   filters: {
@@ -209,131 +150,75 @@ export default {
     }
   },
   components: {
-    AssetItem, AssetItemDetail, LiabilityItem, LiabilityTimeLineItem
+    AssetItem,
+    AssetItemDetail,
+    LiabilityItem,
+    LiabilityTimeLineItem
   },
   methods: {
-    handleAssetClick: function (payload) {
-      this.assetId = payload.assetId
-      this.assetName = payload.assetName
-      this.assetAmount = payload.assetAmount
-      var layer = require('layui-layer')
-      var self = this
-      layer.open({
-        type: 1,
-        title: '修改资产信息',
-        content: $('#assetLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            id: self.assetId,
-            amount: (self.assetAmount * 100).toFixed(0)
-          }
-          self.debug('data:' + JSON.stringify(data))
-          API.updateAsset(data).then((resp) => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              layer.alert('修改失败，请重试！')
-            }
-          })
-        }
-      })
-    },
-    handleTimeLineClick: function (payload) {
-      this.liabilityType = payload.type
-      this.liabilityAmount = (payload.amount / 100).toFixed(2)
-      this.liabilityPaid = payload.paid
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '分期信息',
-        content: $('#liabilityLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            id: payload.id,
-            amount: (self.liabilityAmount * 100).toFixed(0),
-            paid: (self.liabilityPaid * 100).toFixed(0)
-          }
-          API.updateLiability(data).then((resp) => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              layer.alert('修改失败，请重试！')
-            }
-          })
-        }
-      })
-    },
     addAsset: function () {
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '添加资产信息',
-        content: $('#addAssetLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            amount: (self.addAssetAmount * 100).toFixed(0),
-            type: self.addAssetChildType ? self.addAssetChildType : self.addAssetParentType,
-            name: self.addAssetName
-          }
-          API.addAsset(data).then(resp => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              alert('添加成功')
-              layer.close(index)
-              self.loadAssetInfo()
-            } else {
-              alert('添加失败')
-            }
-          })
-        }
-      })
+      this.addAssetModal = true
     },
     addLiability: function () {
-      var layer = require('layui-layer')
-      let self = this
-      layer.open({
-        type: 1,
-        title: '添加分期账单',
-        content: $('#addLiabilityLayerContent'),
-        btn: ['确定', '关闭'],
-        yes: function (index) {
-          let data = {
-            repaymentDay: self.repaymentDay,
-            installment: self.installment,
-            type: self.liabilityChildType,
-            amount: (self.liabilityAmount * 100).toFixed(0)
-          }
-          self.debug('data:' + JSON.stringify(data))
-          API.addLiability(data).then(resp => {
-            if (resp.code === API.CODE_CONST.SUCCESS) {
-              self.loadAssetInfo()
-              layer.close(index)
-            }
-          })
+      this.addLiabilityModal = true
+    },
+    resetAsset: function () {
+      this.addAssetParentType = ''
+      this.addAssetChildType = ''
+      this.addAssetExtName = ''
+      this.addAssetAmount = null
+    },
+    resetLiability: function () {
+      this.liabilityParent = ''
+      this.liabilityChildType = ''
+      this.liabilityChildList = []
+      this.liabilityAmount = null
+      this.repaymentDay = ''
+      this.installment = null
+    },
+    checkAssetAmount: function () {
+      this.addAssetAmount = this.checkNumic(this.addAssetAmount)
+    },
+    checkLiabilityAmount: function () {
+      this.liabilityAmount = this.checkNumic(this.liabilityAmount)
+    },
+    doAddAsset: function () {
+      let request = {
+        type: this.addAssetChildType,
+        name: this.addAssetExtName,
+        amount: (this.addAssetAmount * 100).toFixed(0),
+        available: this.available
+      }
+      API.addAsset(request).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.loadAssetInfo()
+          this.debug('添加成功')
+          this.resetAsset()
         }
       })
-      this.debug('渲染laydate')
-      var layuiLaydate = require('layui-laydate')
-
-      layuiLaydate.render({
-        elem: '#repaymentDay',
-        done: function (value, date, endDate) {
-          self.repaymentDay = value
+    },
+    doAddLiability: function () {
+      let request = {
+        type: this.liabilityChildType,
+        repaymentDay: String(this.repaymentDay),
+        amount: (this.liabilityAmount * 100).toFixed(0),
+        installment: this.installment
+      }
+      API.addLiability(request).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.loadAssetInfo()
+          this.debug('添加成功')
+          this.resetLiability()
         }
       })
     },
     loadAssetInfo: function () {
-      API.requestAssetManage().then((resp) => {
+      API.requestAssetManage().then(resp => {
         if (resp && resp.code === API.CODE_CONST.SUCCESS) {
           let assetManageDTO = resp.assetManage
           this.totalAsset = assetManageDTO.totalAsset
           this.cleanAsset = assetManageDTO.cleanAsset
+          this.availableAsset = assetManageDTO.availableAsset
           this.totalLiability = assetManageDTO.totalLiability
           this.assetModels = assetManageDTO.assetModels
           this.liabilityModels = assetManageDTO.liabilityModels
@@ -362,17 +247,51 @@ export default {
   },
   created () {
     this.loadAssetInfo()
-    API.getLiabilityParents().then(resp => {
-      if (resp.code === API.CODE_CONST.SUCCESS) {
-        this.liabilityParentList = resp.assetTypes
-      }
-    }).then(() => {
-      API.getAssetParents().then(resp => {
+    API.getLiabilityParents()
+      .then(resp => {
         if (resp.code === API.CODE_CONST.SUCCESS) {
-          this.assetParentList = resp.assetTypes
+          this.liabilityParentList = resp.assetTypes
         }
       })
-    })
+      .then(() => {
+        API.getAssetParents().then(resp => {
+          if (resp.code === API.CODE_CONST.SUCCESS) {
+            this.assetParentList = resp.assetTypes
+          }
+        })
+      })
+    this.debug(this.availableAsset)
   }
 }
 </script>
+
+<style scoped>
+
+@media screen and (min-width: 300px) {
+  .asset-container {
+    width: 90%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .asset-container {
+    width: 85%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 35px;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .asset-container {
+    width: 80%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 45px;
+  }
+}
+
+</style>

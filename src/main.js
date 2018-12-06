@@ -7,10 +7,9 @@ import router from './router'
 // 自定义全局方法
 import DateUtil from '@/js/DateUtil'
 import LogUtil from '@/js/LogUtil'
+import CommonUtil from '@/js/CommonUtil'
 
 import 'iview/dist/styles/iview.css'
-import './assets/css/layui.css'
-import './assets/css/global.css'
 
 iView.LoadingBar.config({
   color: '#00fdff'
@@ -20,6 +19,7 @@ Vue.config.productionTip = false
 Vue.use(DateUtil)
 Vue.use(LogUtil)
 Vue.use(iView)
+Vue.use(CommonUtil)
 
 /* eslint-disable no-new */
 new Vue({
