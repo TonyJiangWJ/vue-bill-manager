@@ -21,6 +21,9 @@ const API = {
   addAsset: (data) => {
     return sendAjax('/bootDemo/asset/put', data)
   },
+  deleteAsset: (data) => {
+    return sendAjax('/bootDemo/asset/delete', data)
+  },
   updateLiability: (data) => {
     return sendAjax('/bootDemo/liability/update', data)
   },

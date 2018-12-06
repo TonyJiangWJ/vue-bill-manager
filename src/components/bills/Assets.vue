@@ -1,6 +1,6 @@
 <template>
   <div class="asset-container">
-    <Modal v-model="addAssetModal" title="添加资产信息" :width="380">
+    <Modal v-model="addAssetModal" title="添加资产信息" :width="380" @on-ok="doAddAsset">
       <Row type="flex" justify="center">
         <Col span="10">父类别</Col>
         <Col span="10">
@@ -23,10 +23,19 @@
       </Row>
       <Row type="flex" justify="center">
         <Col span="10">金额</Col>
-        <Col span="10"><Input v-model="addAssetAmount" type="text" placeholder="金额" /></Col>
+        <Col span="10"><Input v-model="addAssetAmount" type="text" @on-blur="checkAssetAmount" placeholder="金额" /></Col>
+      </Row>
+      <Row type="flex" justify="center">
+        <Col span="10">随时使用</Col>
+        <Col span="10">
+          <i-switch v-model="available">
+            <span slot="open">是</span>
+            <span slot="close">否</span>
+          </i-switch>
+        </Col>
       </Row>
     </Modal>
-    <Modal v-model="addLiabilityModal" title="添加分期账单" :width="380">
+    <Modal v-model="addLiabilityModal" title="添加分期账单" :width="380" @on-ok="doAddLiability">
       <Row type="flex" justify="center">
         <Col span="10">父类别</Col>
         <Col span="10">
@@ -53,7 +62,7 @@
       </Row>
       <Row type="flex" justify="center">
         <Col span="10">总金额</Col>
-        <Col span="10"><Input v-model="liabilityAmount" type="text" placeholder="总金额" /></Col>
+        <Col span="10"><Input v-model="liabilityAmount" type="text" @on-blur="checkLiabilityAmount" placeholder="总金额" /></Col>
       </Row>
     </Modal>
     <Divider orientation="left">概览</Divider>
@@ -78,6 +87,7 @@
     <div>
       <div style="margin: 5px;">
         <h2>净资产 <span style="color: #ff0000;" :style="'color: '+(cleanAsset>0 ? '#008000' : '#ff0000')">{{cleanAsset|longToString}}</span></h2>
+        <h2>现金流 <span style="color: #ff0000;" :style="'color: '+(availableAsset>0 ? '#008000' : '#ff0000')">{{availableAsset|longToString}}</span></h2>
       </div>
     </div>
     <div class="layui-col-md12 layui-col-xs12">
@@ -85,7 +95,6 @@
       </Divider>
       <Timeline>
         <liability-time-line-item
-          @timeLineClick="handleTimeLineClick"
           v-for="monthLiabilityModel in monthLiabilityModels"
           :key="monthLiabilityModel.month"
           :month-liability-model="monthLiabilityModel"
@@ -107,25 +116,20 @@ export default {
   data () {
     return {
       collsapeAsset: false,
-      assetId: '',
-      assetType: '',
-      assetName: '',
-      assetAmount: '',
       addAssetParentType: '',
       addAssetChildType: '',
-      addAssetAmount: '',
+      addAssetAmount: null,
       addAssetExtName: '',
-      liabilityType: '',
-      liabilityAmount: '',
-      liabilityPaid: '',
+      available: true,
       liabilityParent: '',
       liabilityChildType: '',
       installment: null,
       repaymentDay: '',
-      amount: '',
+      liabilityAmount: null,
       totalAsset: '',
       totalLiability: '',
       cleanAsset: '',
+      availableAsset: '',
       monthLiability: {
         assetAfterThisMonth: ''
       },
@@ -152,21 +156,61 @@ export default {
     LiabilityTimeLineItem
   },
   methods: {
-    handleAssetClick: function (payload) {
-      this.assetId = payload.assetId
-      this.assetName = payload.assetName
-      this.assetAmount = payload.assetAmount
-    },
-    handleTimeLineClick: function (payload) {
-      this.liabilityType = payload.type
-      this.liabilityAmount = (payload.amount / 100).toFixed(2)
-      this.liabilityPaid = payload.paid
-    },
     addAsset: function () {
       this.addAssetModal = true
     },
     addLiability: function () {
       this.addLiabilityModal = true
+    },
+    resetAsset: function () {
+      this.addAssetParentType = ''
+      this.addAssetChildType = ''
+      this.addAssetExtName = ''
+      this.addAssetAmount = null
+    },
+    resetLiability: function () {
+      this.liabilityParent = ''
+      this.liabilityChildType = ''
+      this.liabilityChildList = []
+      this.liabilityAmount = null
+      this.repaymentDay = ''
+      this.installment = null
+    },
+    checkAssetAmount: function () {
+      this.addAssetAmount = this.checkNumic(this.addAssetAmount)
+    },
+    checkLiabilityAmount: function () {
+      this.liabilityAmount = this.checkNumic(this.liabilityAmount)
+    },
+    doAddAsset: function () {
+      let request = {
+        type: this.addAssetChildType,
+        name: this.addAssetExtName,
+        amount: (this.addAssetAmount * 100).toFixed(0),
+        available: this.available
+      }
+      API.addAsset(request).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.loadAssetInfo()
+          this.debug('添加成功')
+          this.resetAsset()
+        }
+      })
+    },
+    doAddLiability: function () {
+      let request = {
+        type: this.liabilityChildType,
+        repaymentDay: String(this.repaymentDay),
+        amount: (this.liabilityAmount * 100).toFixed(0),
+        installment: this.installment
+      }
+      API.addLiability(request).then(resp => {
+        if (resp.code === API.CODE_CONST.SUCCESS) {
+          this.loadAssetInfo()
+          this.debug('添加成功')
+          this.resetLiability()
+        }
+      })
     },
     loadAssetInfo: function () {
       API.requestAssetManage().then(resp => {
@@ -174,6 +218,7 @@ export default {
           let assetManageDTO = resp.assetManage
           this.totalAsset = assetManageDTO.totalAsset
           this.cleanAsset = assetManageDTO.cleanAsset
+          this.availableAsset = assetManageDTO.availableAsset
           this.totalLiability = assetManageDTO.totalLiability
           this.assetModels = assetManageDTO.assetModels
           this.liabilityModels = assetManageDTO.liabilityModels
@@ -215,14 +260,12 @@ export default {
           }
         })
       })
+    this.debug(this.availableAsset)
   }
 }
 </script>
 
 <style scoped>
-.ivu-row-flex {
-  margin: 0.15rem 0;
-}
 
 @media screen and (min-width: 300px) {
   .asset-container {

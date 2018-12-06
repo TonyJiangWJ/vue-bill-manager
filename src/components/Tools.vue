@@ -7,6 +7,7 @@
         <BreadcrumbItem to="/tools/encryption" :class="breadcrumbSelected=='encryption'?'active':''">基础加密通信</BreadcrumbItem>
         <BreadcrumbItem to="/tools/t2test" :class="breadcrumbSelected=='t2test'?'active':''">T2测试接口</BreadcrumbItem>
         <BreadcrumbItem to="/tools/taxCal" :class="breadcrumbSelected=='taxCal'?'active':''">个税计算</BreadcrumbItem>
+        <span></span>
     </Breadcrumb>
     <div class="tool-container">
       <keep-alive>
