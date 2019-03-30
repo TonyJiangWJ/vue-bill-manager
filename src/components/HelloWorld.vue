@@ -85,10 +85,10 @@
     <ul>
       <li>
         <a
-          href="http://www.layui.com"
+          href="https://www.iviewui.com/"
           target="_blank"
         >
-          layui-css
+          iView
         </a>
       </li>
     </ul>

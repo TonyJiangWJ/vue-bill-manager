@@ -1,5 +1,5 @@
 <template>
-  <div class="asset-container">
+  <div class="common-container">
     <Modal v-model="addAssetModal" title="添加资产信息" :width="380" @on-ok="doAddAsset">
       <Row type="flex" justify="center">
         <Col span="10">父类别</Col>
@@ -106,10 +106,10 @@
 </template>
 
 <script>
-import AssetItemDetail from '@/components/bills/asset/AssetItemDetail'
-import AssetItem from '@/components/bills/asset/AssetItem'
-import LiabilityItem from '@/components/bills/liability/LiabilityItem'
-import LiabilityTimeLineItem from '@/components/bills/liability/LiabilityTimeLineItem'
+import AssetItemDetail from '@/components/assetAndLiability/asset/AssetItemDetail'
+import AssetItem from '@/components/assetAndLiability/asset/AssetItem'
+import LiabilityItem from '@/components/assetAndLiability/liability/LiabilityItem'
+import LiabilityTimeLineItem from '@/components/assetAndLiability/liability/LiabilityTimeLineItem'
 import API from '@/js/api.js'
 export default {
   name: 'Assets',
@@ -264,34 +264,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-@media screen and (min-width: 300px) {
-  .asset-container {
-    width: 90%;
-    margin: 50px auto;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .asset-container {
-    width: 85%;
-    margin: 50px auto;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    padding: 35px;
-  }
-}
-
-@media screen and (min-width: 900px) {
-  .asset-container {
-    width: 80%;
-    margin: 50px auto;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    padding: 45px;
-  }
-}
-
-</style>
