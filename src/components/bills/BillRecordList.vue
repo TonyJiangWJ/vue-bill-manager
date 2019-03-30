@@ -233,7 +233,7 @@ function CostRecord (item) {
   this.target = item.target
   this.tradeNo = item.tradeNo
   this.id = item.id
-
+  this.version = item.version
   // extends
   this.tradeStatus = item.tradeStatus
   this.orderNo = item.orderNo
@@ -264,9 +264,9 @@ export default {
       totalItem: 0,
       pageSize: 0,
       pageNo: 0,
-      isDeleted: '',
-      isHidden: '',
-      inOutType: '',
+      isDeleted: '0',
+      isHidden: '0',
+      inOutType: '支出',
       orderBy: '',
       sort: '',
       newPageSize: 0,
@@ -356,6 +356,7 @@ export default {
               value: '支出'
             }
           ],
+          filteredValue: ['支出'],
           filterMultiple: false,
           filterRemote: function (value, row) {
             this.inOutType = value[0]
@@ -378,6 +379,7 @@ export default {
               value: 0
             }
           ],
+          filteredValue: [0],
           filterMultiple: false,
           filterRemote: function (value, row) {
             this.isDeleted = value[0]
@@ -400,6 +402,7 @@ export default {
               value: 1
             }
           ],
+          filteredValue: [0],
           filterMultiple: false,
           filterRemote: function (value, row) {
             this.isHidden = value[0]
