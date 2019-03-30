@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import TypeTitle from '@/components/bills/common/TypeTitle'
-import LiabilityItemDetail from '@/components/bills/liability/LiabilityItemDetail'
+import TypeTitle from '@/components/assetAndLiability/common/TypeTitle'
+import LiabilityItemDetail from '@/components/assetAndLiability/liability/LiabilityItemDetail'
 
 export default {
   name: 'LiabilityItem',

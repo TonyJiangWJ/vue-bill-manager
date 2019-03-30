@@ -63,6 +63,7 @@ export default {
     },
     updateAssetInfo: function () {
       let request = {
+        version: this.asset.version,
         id: this.asset.id,
         name: this.assetName,
         amount: (this.assetAmount * 100).toFixed(0),

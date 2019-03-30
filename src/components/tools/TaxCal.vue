@@ -127,7 +127,18 @@
               <Input v-model="taxFee" readonly/>
             </Col>
             <Col :xs="6" :sm="4">
-              <Input v-model="taxFeePercent" readonly/>
+              <Tooltip placement="right">
+                <Input v-model="taxFeePercent" readonly/>
+                <div slot="content">
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step1.percent">3% 45</p>
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step2.percent">10% 300</p>
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step3.percent">20% 900</p>
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step4.percent">25% 6500</p>
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step5.percent">30% 6000</p>
+                  <p v-if="oldTaxCurrentLadder > oldTaxLadder.step5.percent">35% 8750</p>
+                  <p>{{oldTaxLadderTips}}</p>
+                </div>
+              </Tooltip>
             </Col>
           </Row>
           <Row type="flex" justify="center" align="middle">
@@ -136,7 +147,18 @@
               <Input v-model="newTaxFee" readonly/>
             </Col>
             <Col :xs="6" :sm="4">
-              <Input v-model="newTaxFeePercent" readonly/>
+              <Tooltip placement="right">
+                <Input v-model="newTaxFeePercent" readonly/>
+                <div slot="content">
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step1.percent">3% 90</p>
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step2.percent">10% 900</p>
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step3.percent">20% 2600</p>
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step4.percent">25% 2500</p>
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step5.percent">30% 6000</p>
+                  <p v-if="newTaxCurrentLadder > newTaxLadder.step5.percent">35% 8750</p>
+                  <p>{{newTaxLadderTips}}</p>
+                </div>
+              </Tooltip>
             </Col>
           </Row>
           <Divider/>
@@ -179,6 +201,7 @@
  * 旧个税阶梯百分比和速算扣除数配置
  */
 let oldTaxLadder = {
+  type: 'old',
   step1: {
     percent: 0.03,
     amount: 1500,
@@ -219,6 +242,7 @@ let oldTaxLadder = {
  * 新个税阶梯百分比和速算扣除数配置
  */
 let newTaxLadder = {
+  type: 'new',
   step1: {
     percent: 0.03,
     amount: 3000,
@@ -276,6 +300,12 @@ export default {
       newInHandSalary: 0,
       balanceBetweenNewOld: 0,
       customProvidentPrecent: 12,
+      newTaxLadderTips: '',
+      newTaxCurrentLadder: '',
+      oldTaxLadderTips: '',
+      oldTaxCurrentLadder: '',
+      newTaxLadder: newTaxLadder,
+      oldTaxLadder: oldTaxLadder,
       config: {
         unemployScale: 0.005,
         endowmentScale: 0.08,
@@ -321,7 +351,25 @@ export default {
       let taxAmount = this.forTax - this.taxPoint
       this.taxFee = this.getTaxFeeByStep(taxAmount, oldTaxLadder)
     },
-    getTaxFee: function (taxAmount, step) {
+    getTaxFee: function (taxAmount, step, preStep, type) {
+      if (preStep === null) {
+        preStep = {
+          amount: 0,
+          percent: 0,
+          discount: 0
+        }
+      }
+      if (type === 'old') {
+        this.oldTaxCurrentLadder = step.percent
+        this.oldTaxLadderTips = '当前税率:' + (step.percent * 100) + '% ' +
+        '税阶税费：' + ((taxAmount - preStep.amount) * step.percent).toFixed(2)
+        this.debug(this.oldTaxLadderTips)
+      } else {
+        this.newTaxCurrentLadder = step.percent
+        this.newTaxLadderTips = '当前税率:' + (step.percent * 100) + '% ' +
+        '税阶税费：' + ((taxAmount - preStep.amount) * step.percent).toFixed(2)
+        this.debug(this.newTaxLadderTips)
+      }
       return taxAmount * step.percent - step.discount
     },
     calNewTaxFee: function () {
@@ -331,19 +379,19 @@ export default {
     getTaxFeeByStep: function (taxAmount, taxLadder) {
       let taxFee = 0
       if (taxAmount < taxLadder.step1.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step1)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step1, null, taxLadder.type)
       } else if (taxAmount < taxLadder.step2.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step2)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step2, taxLadder.step1, taxLadder.type)
       } else if (taxAmount < taxLadder.step3.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step3)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step3, taxLadder.step2, taxLadder.type)
       } else if (taxAmount < taxLadder.step4.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step4)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step4, taxLadder.step3, taxLadder.type)
       } else if (taxAmount < taxLadder.step5.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step5)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step5, taxLadder.step4, taxLadder.type)
       } else if (taxAmount < taxLadder.step6.amount) {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step6)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step6, taxLadder.step5, taxLadder.type)
       } else {
-        taxFee = this.getTaxFee(taxAmount, taxLadder.step7)
+        taxFee = this.getTaxFee(taxAmount, taxLadder.step7, taxLadder.step6, taxLadder.type)
       }
       return taxFee.toFixed(2)
     },

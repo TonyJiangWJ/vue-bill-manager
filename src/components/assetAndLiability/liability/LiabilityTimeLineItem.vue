@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import TimeLineItemDetail from '@/components/bills/liability/TimeLineItemDetail'
-import TypeTitle from '@/components/bills/common/TypeTitle'
+import TimeLineItemDetail from '@/components/assetAndLiability/liability/TimeLineItemDetail'
+import TypeTitle from '@/components/assetAndLiability/common/TypeTitle'
 
 export default {
   name: 'LiabilityTimeLineItem',

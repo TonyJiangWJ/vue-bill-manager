@@ -38,4 +38,35 @@ export default {
 .ivu-row-flex {
   margin: 0.15rem 0;
 }
+
+@media screen and (min-width: 300px) {
+  .common-container {
+    width: 90%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .common-container {
+    width: 85%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 35px;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .common-container {
+    width: 80%;
+    margin: 50px auto;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 45px;
+  }
+}
+
+.gap-5 {
+  margin: 5px;
+}
 </style>
