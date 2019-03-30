@@ -1,5 +1,7 @@
 <template>
-  <Menu theme="light" mode="horizontal" :active-name="selected" @on-select="clickedHome">
+  <Menu ref="topBarMenu" theme="light" mode="horizontal" :active-name="selected"
+    :open-names="openedArray"
+    @on-select="clickedHome" @on-open-change="openMenuChanged">
     <MenuItem name="index">
     <Icon type="ios-home" /> 首页
     </MenuItem>
@@ -8,7 +10,7 @@
     </MenuItem>
     <Submenu name="3">
       <template slot="title">
-        <Icon type="ios-stats" /> 账单相关
+        <Icon type="ios-stats"/> <span @click="toggleSubmenu"> 账单相关</span>
       </template>
       <MenuGroup title="使用">
         <MenuItem name="bills">账单</MenuItem>
@@ -34,7 +36,9 @@ export default {
       get isLogin () {
         this.logined = window.localStorage.getItem('logined') === 'true'
         return this.logined
-      }
+      },
+      openedArray: [],
+      configArray: ['3']
     }
   },
   computed: {
@@ -49,7 +53,24 @@ export default {
     }
   },
   methods: {
+    openMenuChanged: function (openedArray) {
+      this.debug('open menu changed:' + openedArray)
+      this.openedArray = openedArray
+    },
+    toggleSubmenu: function (name) {
+      this.debug('toggle submenu')
+      if (this.openedArray.length === 0) {
+        this.openedArray = this.configArray
+      } else {
+        this.openedArray = []
+      }
+      this.debug(this.openedArray)
+      this.$nextTick(function () {
+        this.$refs.topBarMenu.updateOpened()
+      })
+    },
     clickedHome: function (name) {
+      this.openedArray = []
       if (name === 'index') {
         this.$router.push('/')
       } else if (name === 'tools') {
@@ -82,6 +103,9 @@ export default {
     goLogin: function () {
       this.$router.push('/login')
     }
+  },
+  mounted () {
+    this.openedArray = []
   }
 }
 </script>

@@ -5,7 +5,7 @@ export default {
      * exp: 101a1,11b1.226.01 returns 101111.23
      */
     Vue.prototype.checkNumic = function (valStr) {
-      if (typeof valStr === 'undefined' || valStr === '') {
+      if (typeof valStr === 'undefined' || valStr === null || valStr === '') {
         return ''
       }
       let val
