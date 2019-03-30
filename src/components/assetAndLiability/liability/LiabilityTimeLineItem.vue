@@ -3,14 +3,14 @@
     <div>
         <h3 @click.stop="toggleShowDetail">
             <span>{{monthLiabilityModel.month}}</span>&nbsp;
-            <span>￥{{monthLiabilityModel.total|longToString}}</span>
+            <span>￥{{monthLiabilityModel.remain|longToString}}</span>
             <span :style="{ color: monthLiabilityModel.assetAfterThisMonth>0 ? '#008000' : '#ff0000' }">￥{{monthLiabilityModel.assetAfterThisMonth|longToString}}</span>
         </h3>
         <transition name="fade">
           <Collapse v-if="show">
             <Panel v-for="liabilityModel in monthLiabilityModel.liabilityModels"
               :key="liabilityModel.type+monthLiabilityModel.month">
-              <type-title :type="liabilityModel.type" :total="liabilityModel.total"/>
+              <type-title :type="liabilityModel.type" :total="liabilityModel.remain"/>
               <div slot="content">
                 <ul class="liability-detail">
                   <time-line-item-detail v-for="liability in liabilityModel.liabilityList"
