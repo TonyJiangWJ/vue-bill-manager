@@ -5,7 +5,7 @@
 - 个人账单管理（开发中）
 
  >## live demo
- - http://106.12.40.230/
+ - https://b39b40cc.ngrok.io/#/
 
 ## Build Setup
 
