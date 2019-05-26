@@ -7,7 +7,7 @@
         <Col :xs="10" :sm="6" :md="5" :lg="4"><Input type="text" placeholder="查询内容" v-model="content"></Input></Col>
         <Col :xs="10" :sm="6" :md="5" :lg="4">
           <Button @click="clear">清空</Button>
-          <Button type="primary" @click="query">查询</Button>
+          <Button type="primary" @click="doQuery">查询</Button>
         </Col>
       </Row>
     </div>
@@ -757,6 +757,10 @@ export default {
           this.allTagList = resp.tagInfoList
         }
       })
+    },
+    doQuery: function () {
+      this.pageNo = 0
+      this.query()
     },
     query: function () {
       let requestData = {

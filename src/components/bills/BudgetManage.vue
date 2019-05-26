@@ -36,7 +36,10 @@
 
     <Row type='flex' justify="start">
       <Col span="4">预算管理</Col>
-      <Col span="6"><Button type="primary" @click="addBudget">添加预算</Button></Col>
+      <Col span="6"><Button type="primary" @click="addBudget" size="small">添加预算</Button></Col>
+    </Row>
+    <Row>
+      <Col span="6"><Button type="success" ghost @click="loadReport" size="small">重新载入</Button></Col>
     </Row>
     <Divider/>
     <TimelineItem v-for="report in reportModelList" :key="report.yearMonthInfo">
@@ -168,7 +171,7 @@ export default {
         if (resp.code === API.CODE_CONST.SUCCESS) {
           this.$Message.success('更新成功')
           if (typeof this.budget.tagInfos === 'undefined') {
-            this.budget = Object.assign(this.budget, {tagInfos: []})
+            this.budget.tagInfos = []
           }
           this.budget.tagInfos.push({tagId: tagId, tagName: this.assignableTagList.find(tag => tag.tagId === tagId).tagName})
           this.assignableTagList.splice(this.assignableTagList.findIndex(tagInfo => tagInfo.tagId === tagId), 1)

@@ -11,5 +11,5 @@ export const basePath = '/bootDemo'
 // 需要登录的路由路径
 export const needLogin = ['/bills',
   '/assetList', '/asset/type',
-  '/bill/record/list', '/bill/record/report', '/bill/alipay/upload']
+  '/bill/record/list', '/bill/record/report', '/bill/alipay/upload', '/bill/budget']
 export const enableLog = isDev
