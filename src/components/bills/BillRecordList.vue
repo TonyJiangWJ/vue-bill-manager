@@ -1,147 +1,171 @@
 <template>
-  <div class='common-container'>
+  <div class="common-container">
     <div>
       <Row type="flex" justify="space-around">
-        <Col :xs="10" :sm="6" :md="5" :lg="4"><DatePicker type="date" placeholder="开始时间" v-model="startDate"></DatePicker></Col>
-        <Col :xs="10" :sm="6" :md="5" :lg="4"><DatePicker type="date" placeholder="结束时间" v-model="endDate"></DatePicker></Col>
-        <Col :xs="10" :sm="6" :md="5" :lg="4"><Input type="text" placeholder="查询内容" v-model="content"></Input></Col>
+        <Col :xs="10" :sm="6" :md="5" :lg="4">
+          <DatePicker type="date" placeholder="开始时间" v-model="startDate"></DatePicker>
+        </Col>
+        <Col :xs="10" :sm="6" :md="5" :lg="4">
+          <DatePicker type="date" placeholder="结束时间" v-model="endDate"></DatePicker>
+        </Col>
+        <Col :xs="10" :sm="6" :md="5" :lg="4">
+          <Input type="text" placeholder="查询内容" v-model="content"></Input>
+        </Col>
         <Col :xs="10" :sm="6" :md="5" :lg="4">
           <Button @click="clear">清空</Button>
           <Button type="primary" @click="doQuery">查询</Button>
         </Col>
       </Row>
     </div>
-    <Divider/>
-    <Table stripe border
-        ref="selection"
-        @on-selection-change="selectChanged"
-        :columns="costRecordColumns"
-        :data="costRecordList"
-        @on-row-click="clickedRow"
-        @on-sort-change="sortData">
-    </Table>
+    <Divider />
+    <Table
+      stripe
+      border
+      ref="selection"
+      @on-selection-change="selectChanged"
+      :columns="costRecordColumns"
+      :data="costRecordList"
+      @on-row-click="clickedRow"
+      @on-sort-change="sortData"
+    ></Table>
     <Drawer title="账单详情" v-model="showRecordDetail" :width="drawerWidth">
       <div>
-      <Row>
-        <Col span="8"><p>账单编号:</p></Col>
-        <Col span="16">{{detail.tradeNo}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">订单编号:</Col>
-        <Col span="16">{{detail.orderNo}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">创建时间:</Col>
-        <Col span="16">{{detail.createTime}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">支付时间:</Col>
-        <Col span="16">{{detail.paidTime}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">修改时间:</Col>
-        <Col span="16">{{detail.modifyTime}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">交易对方:</Col>
-        <Col span="16">{{detail.target}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">金额:</Col>
-        <Col span="16">{{detail.money}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">账单状态:</Col>
-        <Col span="16">{{detail.tradeStatus}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">收支类型:</Col>
-        <Col span="16">{{detail.inOutType}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">订单状态:</Col>
-        <Col span="16">{{detail.orderStatus}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">服务手续费:</Col>
-        <Col span="16">{{detail.serviceCost}}</Col>
-      </Row>
-      <Row>
-        <Col span="8">退款:</Col>
-        <Col span="16">{{detail.refundMoney}}</Col>
-      </Row>
-      <Row type="flex" align="middle">
-        <Col span="8">交易类型:</Col>
-        <Col span="16"><Input type="text" v-model="detail.orderType"></Input></Col>
-      </Row>
-      <Row type="flex" align="middle">
-        <Col span="8">交易地点:</Col>
-        <Col span="16"><Input type="text" v-model="detail.location"></Input></Col>
-      </Row>
-      <Row type="flex" align="middle">
-        <Col span="8">商品名:</Col>
-        <Col span="16"><Input type="text" v-model="detail.goodsName"></Input></Col>
-      </Row>
-      <Row type="flex" align="middle">
-        <Col span="8">备注:</Col>
-        <Col span="16"><Input type="text" v-model="detail.memo"></Input></Col>
-      </Row>
-      <Row type='flex' align='middle'>
-        <Col span="8">是否已删除</Col>
-        <Col span="16"><Button size='small' @click="toggleDelete" :type="detail.isDeleted==='未删除'?'success':'error'" ghost>{{detail.isDeleted}}</Button></Col>
-      </Row>
-      <Row type='flex' align='middle'>
-        <Col span="8">是否显示</Col>
-        <Col span="16"><Button size='small' @click="toggleHide" :type="detail.isHidden==='显示'?'success':'error'" ghost>{{detail.isHidden}}</Button></Col>
-      </Row>
-      <Divider/>
-      <Row type="flex" align="middle">
-        <Col span="8">标签:</Col>
-        <Col span="16">
-          <Tag v-for="(tag,index) in detail.tagInfos" type="border" :key="tag.id" :color="tagColors[index % tagColors.length]">{{tag.tagName}}</Tag>
-        </Col>
-      </Row>
-      <Divider/>
-      <Row type='flex' align='middle'>
-        <Col span="8">操作</Col>
-        <Col span="12">
-          <Row :gutter="16">
-            <Col>
-              <Button class="gap-5" type="success" @click="tagManage = true;getAllTagList()">关联标签</Button>
-            </Col>
-            <Col>
-              <Button class="gap-5" type="success" @click="saveRecordChange()">保存修改</Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+        <Row>
+          <Col span="8">
+            <p>账单编号:</p>
+          </Col>
+          <Col span="16">{{detail.tradeNo}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">订单编号:</Col>
+          <Col span="16">{{detail.orderNo}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">创建时间:</Col>
+          <Col span="16">{{detail.createTime}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">支付时间:</Col>
+          <Col span="16">{{detail.paidTime}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">修改时间:</Col>
+          <Col span="16">{{detail.modifyTime}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">交易对方:</Col>
+          <Col span="16">{{detail.target}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">金额:</Col>
+          <Col span="16">{{detail.money}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">账单状态:</Col>
+          <Col span="16">{{detail.tradeStatus}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">收支类型:</Col>
+          <Col span="16">{{detail.inOutType}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">订单状态:</Col>
+          <Col span="16">{{detail.orderStatus}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">服务手续费:</Col>
+          <Col span="16">{{detail.serviceCost}}</Col>
+        </Row>
+        <Row>
+          <Col span="8">退款:</Col>
+          <Col span="16">{{detail.refundMoney}}</Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">交易类型:</Col>
+          <Col span="16">
+            <Input type="text" v-model="detail.orderType"></Input>
+          </Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">交易地点:</Col>
+          <Col span="16">
+            <Input type="text" v-model="detail.location"></Input>
+          </Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">商品名:</Col>
+          <Col span="16">
+            <Input type="text" v-model="detail.goodsName"></Input>
+          </Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">备注:</Col>
+          <Col span="16">
+            <Input type="text" v-model="detail.memo"></Input>
+          </Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">是否已删除</Col>
+          <Col span="16">
+            <Button size="small" @click="toggleDelete" :type="detail.isDeleted==='未删除'?'success':'error'" ghost>{{detail.isDeleted}}</Button>
+          </Col>
+        </Row>
+        <Row type="flex" align="middle">
+          <Col span="8">是否显示</Col>
+          <Col span="16">
+            <Button size="small" @click="toggleHide" :type="detail.isHidden==='显示'?'success':'error'" ghost>{{detail.isHidden}}</Button>
+          </Col>
+        </Row>
+        <Divider />
+        <Row type="flex" align="middle">
+          <Col span="8">标签:</Col>
+          <Col span="16">
+            <Tag v-for="(tag,index) in detail.tagInfos" type="border" :key="tag.id" :color="tagColors[index % tagColors.length]">{{tag.tagName}}</Tag>
+          </Col>
+        </Row>
+        <Divider />
+        <Row type="flex" align="middle">
+          <Col span="8">操作</Col>
+          <Col span="12">
+            <Row :gutter="16">
+              <Col>
+                <Button class="gap-5" type="success" @click="tagManage = true;getAllTagList()">关联标签</Button>
+              </Col>
+              <Col>
+                <Button class="gap-5" type="success" @click="saveRecordChange()">保存修改</Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       </div>
     </Drawer>
     <Modal v-model="addTagModal" title="添加标签信息" :width="380" @on-ok="doCreateTag">
-      <Row type='flex' align='middle'>
+      <Row type="flex" align="middle">
         <Col span="8">标签名称</Col>
-        <Col span="16"><Input type="text" v-model="newTag.tagName"></Input></Col>
+        <Col span="16">
+          <Input type="text" v-model="newTag.tagName"></Input>
+        </Col>
       </Row>
     </Modal>
     <Modal v-model="addCostRecordModal" title="添加账单信息" :width="380">
       <Form ref="newRecord" :model="newRecord" label-position="right" :label-width="100" :rules="ruleValidate">
         <FormItem label="交易时间:" prop="createTime">
-          <DatePicker type="datetime" v-model="newRecord.createTime" clearable/>
+          <DatePicker type="datetime" v-model="newRecord.createTime" clearable />
         </FormItem>
         <FormItem label="交易地点:" prop="location">
-          <Input type="text" v-model="newRecord.location"/>
+          <Input type="text" v-model="newRecord.location" />
         </FormItem>
         <FormItem label="金额:" prop="money">
-          <Input type="text" @on-blur="checkAmount" v-model="newRecord.money"/>
+          <Input type="text" @on-blur="checkAmount" v-model="newRecord.money" />
         </FormItem>
         <FormItem label="交易对方:" prop="target">
-          <Input type="text" v-model="newRecord.target"/>
+          <Input type="text" v-model="newRecord.target" />
         </FormItem>
         <FormItem label="备注:" prop="memo">
-          <Input type="text" v-model="newRecord.memo"/>
+          <Input type="text" v-model="newRecord.memo" />
         </FormItem>
         <FormItem label="交易类型:" prop="orderType">
-          <Input type="text" v-model="newRecord.orderType"/>
+          <Input type="text" v-model="newRecord.orderType" />
         </FormItem>
         <FormItem label="收入/支出:" prop="inOutType">
           <Select v-model="newRecord.inOutType">
@@ -156,12 +180,20 @@
       </div>
     </Modal>
     <Drawer title="标签管理" v-model="tagManage">
-      <Button size='small' @click="createTag">新增标签</Button>
-      <Button size='small' @click="removeTags" type="dashed">{{removeTagMode?'取消':''}}删除标签</Button>
+      <Button size="small" @click="createTag">新增标签</Button>
+      <Button size="small" @click="removeTags" type="dashed">{{removeTagMode?'取消':''}}删除标签</Button>
       <Divider orientation="left">全部标签</Divider>
       <Row>
         <template v-if="!removeTagMode">
-          <Button class='gap-5' v-for="tag in allTagList" :key="tag.tagId" icon="ios-add" type="dashed" size="small" @click.native="addTagToRecord(tag.tagId)">{{tag.tagName}}</Button>
+          <Button
+            class="gap-5"
+            v-for="tag in allTagList"
+            :key="tag.tagId"
+            icon="ios-add"
+            type="dashed"
+            size="small"
+            @click.native="addTagToRecord(tag.tagId)"
+          >{{tag.tagName}}</Button>
         </template>
         <template v-else>
           <Tag v-for="tag in allTagList" :key="tag.tagId" type="border" color="red" closable @on-close="doRemoveTag(tag.tagId)">{{tag.tagName}}</Tag>
@@ -169,16 +201,31 @@
       </Row>
       <Divider orientation="left">已关联标签</Divider>
       <Row>
-        <Tag v-for="(tag,index) in detail.tagInfos" :key="tag.tagId" type="border" :color="tagColors[index % tagColors.length]" closable @on-close="removeTagFromRecord(tag.tagId)">{{tag.tagName}}</Tag>
+        <Tag
+          v-for="(tag,index) in detail.tagInfos"
+          :key="tag.tagId"
+          type="border"
+          :color="tagColors[index % tagColors.length]"
+          closable
+          @on-close="removeTagFromRecord(tag.tagId)"
+        >{{tag.tagName}}</Tag>
       </Row>
     </Drawer>
     <Drawer title="标签管理" v-model="communalTagManage">
-      <Button size='small' @click="createTag">新增标签</Button>
-      <Button size='small' @click="removeTags" type="dashed">{{removeTagMode?'取消':''}}删除标签</Button>
+      <Button size="small" @click="createTag">新增标签</Button>
+      <Button size="small" @click="removeTags" type="dashed">{{removeTagMode?'取消':''}}删除标签</Button>
       <Divider orientation="left">全部标签</Divider>
       <Row>
         <template v-if="!removeTagMode">
-          <Button class='gap-5' v-for="tag in allTagList" :key="tag.tagId" icon="ios-add" type="dashed" size="small" @click.native="addTagToRecords(tag.tagId)">{{tag.tagName}}</Button>
+          <Button
+            class="gap-5"
+            v-for="tag in allTagList"
+            :key="tag.tagId"
+            icon="ios-add"
+            type="dashed"
+            size="small"
+            @click.native="addTagToRecords(tag.tagId)"
+          >{{tag.tagName}}</Button>
         </template>
         <template v-else>
           <Tag v-for="tag in allTagList" :key="tag.tagId" type="border" color="red" closable @on-close="doRemoveTag(tag.tagId)">{{tag.tagName}}</Tag>
@@ -186,28 +233,36 @@
       </Row>
       <Divider orientation="left">已关联标签</Divider>
       <Row>
-        <Tag v-for="(tag,index) in communalTags" :key="tag.tagId" type="border" :color="tagColors[index % tagColors.length]" closable @on-close="removeTagFromRecords(tag.tagId)">{{tag.tagName}}</Tag>
+        <Tag
+          v-for="(tag,index) in communalTags"
+          :key="tag.tagId"
+          type="border"
+          :color="tagColors[index % tagColors.length]"
+          closable
+          @on-close="removeTagFromRecords(tag.tagId)"
+        >{{tag.tagName}}</Tag>
       </Row>
     </Drawer>
-    <Divider/>
-    <Page :total="totalItem"
-          show-total
-          show-sizer
-          size="small"
-          :current="pageNo"
-          :page-size="pageSize"
-          @on-change="queryNewPage"
-          @on-page-size-change="queryNewSize"/>
-    <Divider/>
+    <Divider />
+    <Page
+      :total="totalItem"
+      show-total
+      show-sizer
+      size="small"
+      :current="pageNo"
+      :page-size="pageSize"
+      @on-change="queryNewPage"
+      @on-page-size-change="queryNewSize"
+    />
+    <Divider />
     <Row>
       <Col>
-        <Button size='small' type="dashed" @click="toggleTagColumn">{{showTagColumn === true ? '隐藏' : '显示'}}标签</Button>
-        <Button size='small' type="success" ghost @click="addCostRecord">添加账单</Button>
+        <Button size="small" type="dashed" @click="toggleTagColumn">{{showTagColumn === true ? '隐藏' : '显示'}}标签</Button>
+        <Button size="small" type="success" ghost @click="addCostRecord">添加账单</Button>
       </Col>
       <Col>
         <Button size="small" type="primary" ghost @click="calSumAmount">计算总金额</Button>
         <span>{{sumAmount===0?'':sumAmount}}</span>
-      </Col>
       </Col>
       <Col>
         <Button size="small" type="primary" ghost @click="batchManageTags" :disabled="!haveSelectedItem">批量设置标签</Button>
@@ -287,7 +342,20 @@ export default {
       newRecord: {},
       communalTags: [],
       selectedCostIds: [],
-      tagColors: ['primary', 'success', 'warning', 'magenta', 'volcano', 'orange', 'gold', 'yellow', 'lime', 'green', 'cyan', 'blue'],
+      tagColors: [
+        'primary',
+        'success',
+        'warning',
+        'magenta',
+        'volcano',
+        'orange',
+        'gold',
+        'yellow',
+        'lime',
+        'green',
+        'cyan',
+        'blue'
+      ],
       addtionalTagColumn: {
         title: '标签',
         minWidth: 150,
@@ -462,7 +530,11 @@ export default {
       if (this.checkHaveItemSelection()) {
         let selected = this.$refs.selection.getSelection()
         this.debug(selected.length)
-        let sum = selected.map(elem => parseFloat(elem.money)).reduce((a, b) => { return a + b })
+        let sum = selected
+          .map(elem => parseFloat(elem.money))
+          .reduce((a, b) => {
+            return a + b
+          })
         this.debug(sum)
         this.sumAmount = sum.toFixed(2)
       }
@@ -475,7 +547,7 @@ export default {
     },
     doAddCostRecord: function () {
       this.debug('data:' + JSON.stringify(this.newRecord))
-      this.$refs['newRecord'].validate((valid) => {
+      this.$refs['newRecord'].validate(valid => {
         if (valid) {
           let request = {
             createTime: this.dateFormat(this.newRecord.createTime, 'yyyy-MM-dd HH:mm:ss'),
@@ -655,7 +727,7 @@ export default {
             if (resp.code === API.CODE_CONST.SUCCESS) {
               self.debug('删除成功')
               self.getAllTagList()
-              API.loadRecordTagList({tradeNo: self.detail.tradeNo}).then(resp => {
+              API.loadRecordTagList({ tradeNo: self.detail.tradeNo }).then(resp => {
                 if (resp.code === API.CODE_CONST.SUCCESS) {
                   self.detail.tagInfos = resp.tagInfoModels
                 } else if (resp.code === API.CODE_CONST.DATA_NOT_EXIST) {
@@ -723,7 +795,7 @@ export default {
       })
       let width = document.documentElement.clientWidth
       this.debug(width)
-      this.drawerWidth = (width / 2) > 256 ? (width / 2) : 256
+      this.drawerWidth = width / 2 > 256 ? width / 2 : 256
       if (this.drawerWidth > 500) {
         this.drawerWidth = 500
       }
@@ -818,7 +890,7 @@ export default {
       if (this.showTagColumn === true) {
         this.costRecordColumns = [this.addtionalTagColumn].concat(this.costRecordColumns)
       } else {
-        this.costRecordColumns = this.costRecordColumns.filter((elem) => elem.title !== this.addtionalTagColumn.title)
+        this.costRecordColumns = this.costRecordColumns.filter(elem => elem.title !== this.addtionalTagColumn.title)
       }
     }
   }

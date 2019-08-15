@@ -45,7 +45,7 @@ export default {
       var source = this.sqlSourceStr
       try {
         var sql = /.*Preparing.*:(.*)>?/.exec(source)[1].trim().replace(/\s+/g, ' ')
-        var params = /Parameters:\s*\[(.*)]/.exec(source)[1]
+        var params = /Parameters.*:\s*\[(.*)]/.exec(source)[1]
         var paramsList = params.split(/,[\s]*/)
         for (var i = 0; i < paramsList.length; i++) {
           var param = paramsList[i]

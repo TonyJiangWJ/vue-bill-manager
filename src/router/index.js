@@ -19,8 +19,10 @@ import Login from '@/components/Login'
 import Register from '@/components/Register'
 import AssetTypes from '@/components/AssetTypes'
 import TaxCal from '@/components/tools/TaxCal'
-
-import {debug} from '@/js/LogUtil'
+import TableDemo from '@/components/demos/TableDemo'
+import TableExpandDemo from '@/components/demos/TableExpandDemo'
+import CheckGroupDemo from '@/components/demos/check-group-demo'
+import { debug } from '@/js/LogUtil'
 import API from '@/js/api.js'
 import { needLogin } from '@/js/config.js'
 
@@ -114,6 +116,21 @@ const router = new Router({
       path: '/asset/type',
       name: 'AssetTypes',
       component: AssetTypes
+    },
+    {
+      path: '/tree/demo/table',
+      name: 'TableDemo',
+      component: TableDemo
+    },
+    {
+      path: '/tree/demo/tableExpand',
+      name: 'TableExpandDemo',
+      component: TableExpandDemo
+    },
+    {
+      path: '/demo/checkGroup',
+      name: 'CheckGroupDemo',
+      component: CheckGroupDemo
     },
     {
       path: '*',

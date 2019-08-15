@@ -41,8 +41,13 @@ export default {
       loginError: false,
       userName: '',
       password: '',
-      logined: false,
+      // logined: false,
       redirect: ''
+    }
+  },
+  computed: {
+    logined: function () {
+      return this.$store.getters['loginStatus/isLogin']
     }
   },
   methods: {
@@ -67,7 +72,7 @@ export default {
         if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('登录成功')
           this.loginError = false
-          window.localStorage.setItem('logined', 'true')
+          this.$store.commit('loginStatus/setLogin')
           if (this.redirect !== '') {
             this.$router.push(this.redirect)
           } else {
@@ -84,8 +89,8 @@ export default {
       API.logout().then((resp) => {
         if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('退出成功')
-          window.localStorage.removeItem('logined')
-          this.logined = false
+          this.$store.commit('loginStatus/setLogout')
+          // this.logined = false
         }
       })
     },
@@ -110,14 +115,15 @@ export default {
     }
   },
   created () {
-    API.checkLoginStatus().then((resp) => {
-      if (resp.code === API.CODE_CONST.SUCCESS) {
-        this.logined = true
-      } else {
-        window.localStorage.removeItem('logined')
-        this.logined = false
-      }
-    })
+    this.$store.dispatch('loginStatus/checkLoginStatus')
+    // API.checkLoginStatus().then((resp) => {
+    //   if (resp.code === API.CODE_CONST.SUCCESS) {
+    //     this.logined = true
+    //   } else {
+    //     window.localStorage.removeItem('logined')
+    //     this.logined = false
+    //   }
+    // })
   },
   mounted () {
     let redirect

@@ -19,7 +19,7 @@
         <MenuItem name="alipayUpload">支付宝账单上传</MenuItem>
       </MenuGroup>
       <MenuGroup title="用户">
-        <MenuItem v-if="isLogin" name="logout">退出登录</MenuItem>
+        <MenuItem v-if="logined" name="logout">退出登录</MenuItem>
         <MenuItem v-else name="goLogin">登录</MenuItem>
       </MenuGroup>
     </Submenu>
@@ -32,11 +32,6 @@ export default {
   name: 'TopBar',
   data () {
     return {
-      logined: false,
-      get isLogin () {
-        this.logined = window.localStorage.getItem('logined') === 'true'
-        return this.logined
-      },
       openedArray: [],
       configArray: ['3']
     }
@@ -50,6 +45,9 @@ export default {
       } else {
         return 'index'
       }
+    },
+    logined: function () {
+      return this.$store.getters['loginStatus/isLogin']
     }
   },
   methods: {
@@ -93,8 +91,7 @@ export default {
       if (confirm('确定退出登录吗?')) {
         API.logout().then(resp => {
           if (resp.code === API.CODE_CONST.SUCCESS) {
-            window.localStorage.removeItem('logined')
-            this.logined = false
+            // window.localStorage.removeItem('logined')
             this.$router.push('/login')
           }
         })

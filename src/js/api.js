@@ -5,7 +5,8 @@ import iView from 'iview'
 import {
   host,
   rsaPubKey,
-  basePath
+  basePath,
+  useBrowserHost
 } from '@/js/config.js'
 import { debug } from '@/js/LogUtil'
 
@@ -259,7 +260,16 @@ function errorLog (e) {
 function sendAjax (url, data) {
   debug('request data:' + JSON.stringify(data))
   iView.LoadingBar.start()
-  return axios.post(`${host}${basePath}${url}`, qs.stringify(data))
+  let usingHost = host
+  if (useBrowserHost) {
+    let href = window.location.href
+    let regex = /(https?:\/\/[^:/]*)(:\d+)?\//
+    if (regex.test(href)) {
+      usingHost = regex.exec(href)[1]
+    }
+    debug('使用当前路径host:' + usingHost)
+  }
+  return axios.post(`${usingHost}${basePath}${url}`, qs.stringify(data))
     .then((response) => {
       if (response.data.code === API.CODE_CONST.NOT_LOGIN) {
         debug('未登录')
