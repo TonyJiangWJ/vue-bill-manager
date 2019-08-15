@@ -5,7 +5,7 @@
 - 个人账单管理（开发中）
 
  >## live demo
- - http://106.12.40.230/
+ - https://tonyjiangj.github.io/#
 
 ## Build Setup
 

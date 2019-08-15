@@ -4,7 +4,7 @@
       <span>{{liability.name}}</span>&nbsp;
       <span>￥{{liability.amount|longToString}}</span>
       <span :style="liability.paid>0?'':'display:none;'">
-          (<span style="color: #20f700;">{{liability.paid|longToString}}</span>)
+          (<span style="color: rgb(255, 0, 0);">{{liability.amount-liability.paid|longToString}}</span>)
       </span>
       &nbsp;
       <span>{{liability.index}}</span><span>/</span><span>{{liability.installment}}</span>&nbsp;
@@ -67,6 +67,7 @@ export default {
     },
     updateLiabilityInfo: function () {
       let request = {
+        version: this.liability.version,
         id: this.liability.id,
         amount: (this.liabilityAmount * 100).toFixed(0),
         paid: (this.liabilityPaid * 100).toFixed(0)

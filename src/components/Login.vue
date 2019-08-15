@@ -12,7 +12,7 @@
       <Row type="flex" justify="center" align="middle">
         <Col span="8">密&nbsp;&nbsp;&nbsp;码:</Col>
         <Col span="12">
-          <Tooltip :content="loginError?'用户名或密码错误':'密码最短6位'" placement="right" :disabled="!(showUserNameError||loginError)" :always="showUserNameError">
+          <Tooltip :content="loginError?'用户名或密码错误':'密码最短6位'" placement="right" :disabled="!(showUserNameError||loginError)" :always="showPwdError||loginError">
             <Input type="password" placeholder="请输入密码" v-model="password"/>
           </Tooltip>
         </Col>
@@ -41,7 +41,13 @@ export default {
       loginError: false,
       userName: '',
       password: '',
-      logined: false
+      // logined: false,
+      redirect: ''
+    }
+  },
+  computed: {
+    logined: function () {
+      return this.$store.getters['loginStatus/isLogin']
     }
   },
   methods: {
@@ -66,11 +72,16 @@ export default {
         if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('登录成功')
           this.loginError = false
-          window.localStorage.setItem('logined', 'true')
-          this.$router.push('/')
+          this.$store.commit('loginStatus/setLogin')
+          if (this.redirect !== '') {
+            this.$router.push(this.redirect)
+          } else {
+            this.$router.push('/')
+          }
         } else {
           this.debug('登录失败')
           this.loginError = true
+          this.showPwdError = true
         }
       })
     },
@@ -78,8 +89,8 @@ export default {
       API.logout().then((resp) => {
         if (resp.code === API.CODE_CONST.SUCCESS) {
           this.debug('退出成功')
-          window.localStorage.removeItem('logined')
-          this.logined = false
+          this.$store.commit('loginStatus/setLogout')
+          // this.logined = false
         }
       })
     },
@@ -104,14 +115,28 @@ export default {
     }
   },
   created () {
-    API.checkLoginStatus().then((resp) => {
-      if (resp.code === API.CODE_CONST.SUCCESS) {
-        this.logined = true
-      } else {
-        window.localStorage.removeItem('logined')
-        this.logined = false
-      }
-    })
+    this.$store.dispatch('loginStatus/checkLoginStatus')
+    // API.checkLoginStatus().then((resp) => {
+    //   if (resp.code === API.CODE_CONST.SUCCESS) {
+    //     this.logined = true
+    //   } else {
+    //     window.localStorage.removeItem('logined')
+    //     this.logined = false
+    //   }
+    // })
+  },
+  mounted () {
+    let redirect
+    if (this.$route.params) {
+      this.debug('有参数')
+      redirect = this.$route.params.redirect
+    } else {
+      this.debug('无参数')
+    }
+    if (typeof redirect !== 'undefined' && redirect !== '') {
+      this.redirect = redirect.substring(1)
+    }
+    this.debug('转发路径：' + this.redirect)
   }
 }
 </script>
@@ -125,14 +150,27 @@ export default {
   line-height: 20px;
   text-align: center;
 }
-.login-container {
-  margin: 60px auto 0;
-  max-width: 400px;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-  padding: 50px 50px 30px;
-}
+
 .login-container > div {
   margin: 0.5rem 0;
+}
+
+@media screen and (min-width: 300px) {
+  .login-container {
+    width: 90%;
+    margin: 60px auto 0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 50px 50px 30px;
+  }
+}
+
+@media screen and (min-width: 450px) {
+  .login-container {
+    margin: 60px auto 0;
+    max-width: 400px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    padding: 50px 50px 30px;
+  }
 }
 
 .button_container {

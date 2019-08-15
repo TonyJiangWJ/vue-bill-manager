@@ -4,6 +4,7 @@ import Vue from 'vue'
 import iView from 'iview'
 import App from './App'
 import router from './router'
+import store from './store'
 // 自定义全局方法
 import DateUtil from '@/js/DateUtil'
 import LogUtil from '@/js/LogUtil'
@@ -24,6 +25,7 @@ Vue.use(CommonUtil)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: { App },
   template: '<App/>'

@@ -8,13 +8,21 @@ import CommonTools from '@/components/tools/CommonTools'
 import JsonFormat from '@/components/tools/JsonFormat'
 import SqlLogFormat from '@/components/tools/SqlLogFormat'
 import Encryption from '@/components/tools/Encryption'
-import Bills from '@/components/Bills'
-import Assets from '@/components/bills/Assets'
+import AssetAndLiability from '@/components/AssetAndLiability'
+import Assets from '@/components/assetAndLiability/Assets'
+import Bills from '@/components/bills/Bills'
+import BillRecordList from '@/components/bills/BillRecordList'
+import BillReport from '@/components/bills/BillReport'
+import AlipayFileUpload from '@/components/bills/AlipayFileUpload'
+import BudgetManage from '@/components/bills/BudgetManage'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
 import AssetTypes from '@/components/AssetTypes'
 import TaxCal from '@/components/tools/TaxCal'
-
+import TableDemo from '@/components/demos/TableDemo'
+import TableExpandDemo from '@/components/demos/TableExpandDemo'
+import CheckGroupDemo from '@/components/demos/check-group-demo'
+import { debug } from '@/js/LogUtil'
 import API from '@/js/api.js'
 import { needLogin } from '@/js/config.js'
 
@@ -63,11 +71,35 @@ const router = new Router({
     },
     {
       path: '/assetList',
-      component: Bills,
+      component: AssetAndLiability,
       children: [{
         path: '',
         name: 'Assets',
         component: Assets
+      }]
+    },
+    {
+      path: '/bill',
+      component: Bills,
+      children: [{
+        path: 'record/list',
+        name: 'BillRecordList',
+        component: BillRecordList
+      },
+      {
+        path: 'record/report',
+        name: 'BillReport',
+        component: BillReport
+      },
+      {
+        path: 'alipay/upload',
+        name: 'AlipayFileUpload',
+        component: AlipayFileUpload
+      },
+      {
+        path: 'budget',
+        name: 'BudgetManage',
+        component: BudgetManage
       }]
     },
     {
@@ -86,6 +118,21 @@ const router = new Router({
       component: AssetTypes
     },
     {
+      path: '/tree/demo/table',
+      name: 'TableDemo',
+      component: TableDemo
+    },
+    {
+      path: '/tree/demo/tableExpand',
+      name: 'TableExpandDemo',
+      component: TableExpandDemo
+    },
+    {
+      path: '/demo/checkGroup',
+      name: 'CheckGroupDemo',
+      component: CheckGroupDemo
+    },
+    {
       path: '*',
       name: 'NotFound',
       component: HelloWorld
@@ -102,7 +149,15 @@ router.beforeEach((to, from, next) => {
     } else {
       API.checkLoginStatus().then((resp) => {
         if (!resp || resp.code !== API.CODE_CONST.SUCCESS) {
-          next('/login')
+          let pushParams = {
+            name: 'Login',
+            params: {
+              redirect: '#' + to.path
+            }
+          }
+          debug(JSON.stringify(pushParams))
+          router.push(pushParams)
+          iView.LoadingBar.finish()
         } else {
           next()
         }
