@@ -1,5 +1,7 @@
 # vue-bill-manager
 
+# ARCHIVED 新仓库 [webpack4版本](https://github.com/TonyJiangWJ/vue-bill-manager-wp4)
+
 >## 基于vue开发的工具页面，包含以下功能
 - 实用小工具 基础加密等
 - 个人账单管理（开发中）
